@@ -1,0 +1,4 @@
+[] Grid Class
+    [] Visualize Grid
+    [] Extraction point
+    [] pass in coordinates for agents, ghost
