@@ -1,4 +1,16 @@
-[] Grid Class
-    [] Visualize Grid
-    [] Extraction point
-    [] pass in coordinates for agents, ghost
+[X] Grid Class
+    [X] Visualize Grid
+    [X] Extraction point
+    [X] pass in coordinates for agents, ghost
+
+
+[] Start Baseline
+    [] understand setup for PyMARL
+    [] reward structure
+
+
+[] Add Partial Observability
+    [] ensure vision works for agents
+    [] start modelling ghost location probabilities
+    [] visualize ghost location probabilities
+    [] train this model
