@@ -1,4 +1,5 @@
 import random
+from Constants import cheb_dist
 
 gridWidth = 30
 gridHeight = 30
@@ -11,7 +12,7 @@ class Ghost:
         self.x = x
         self.y = y
 
-        self.Health = 90
+        self.Health = 90 #maybe use later on
         self.avoidRadius = 5
 
 
@@ -34,9 +35,6 @@ class Ghost:
         # Deduplicate in case clamping created duplicates, and shuffle to break ties fairly
         candidateMoves = list({(nx, ny) for (nx, ny) in candidateMoves})
         random.shuffle(candidateMoves)
-
-        def cheb_dist(p, q):
-            return max(abs(p[0] - q[0]), abs(p[1] - q[1]))
 
         def min_dist_to_agents(p):
             return min((cheb_dist(p, a) for a in agentCoords), default=float("inf"))

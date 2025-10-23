@@ -1,7 +1,9 @@
 
 import Grid
+from Constants import ACTION_TO_DELTA
 
 import random
+
 
 visibilityRadius = 2
 
@@ -12,10 +14,16 @@ class Agent:
         self.x = x
         self.y = y
 
+    ## OBSERVATIONS ##
+
     def receiveObservation():
         pass
 
-    def move(self):
+
+    ## ACTIONS ##
+
+    #Initial "test game"
+    def randMove(self):
 
         # 8 directions + stay
         moves = [(-1,-1), (0,-1), (1,-1),
@@ -38,3 +46,13 @@ class Agent:
 
         self.x , self.y = new_x, new_y
         return self.x, self.y
+    
+    def apply_action(self, action_id: int):
+        dx, dy = ACTION_TO_DELTA[action_id]
+        nx = min(max(self.x + dx, 0), Grid.gridWidth - 1)
+        ny = min(max(self.y + dy, 0), Grid.gridHeight - 1)
+        self.x, self.y = nx, ny
+
+
+
+    ## REWARDS ##
