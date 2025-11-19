@@ -261,7 +261,7 @@ class GameEngine:
             success = True
         elif self.Time >= self.episodeLimit:
             terminated = True
-            reward -= 1000.0  # Large failure penalty to strongly discourage timeout
+            # NO massive failure penalty - let shaped rewards guide learning
 
         if terminated:
             return reward, terminated, success
@@ -301,16 +301,13 @@ class GameEngine:
     def AgentToGhostDist_Reward(self, prev_agent_ghost_d):
         reward = 0.0
 
-        # ABSOLUTE distance reward (potential field approach)
         # Closer to ghost = higher reward every step
         max_dist = max(self.grid.width, self.grid.height) - 1
         
         for a in self.agents:
             dist = cheb_dist((a.x, a.y), self.ghostCoords)
-            # Inverse distance: reward = lambda * (1 - normalized_distance)
-            # When dist=0: reward = lambda * 1.0 per agent
-            # When dist=max: reward = lambda * 0.0
-            reward += self.lambda_agent_dist_to_ghost * (1.0 - dist / max_dist)
+            norm_dist = dist / max_dist
+            reward += self.lambda_agent_dist_to_ghost * ((1.0 - norm_dist) ** 2) * 2.0 #exponential pull for stronger incentive 
 
         return reward
     
@@ -318,12 +315,15 @@ class GameEngine:
         reward = 0.0
         new_surround_count = self.ghost.GetSurroundedCount(self.agentCoords)
 
-        # Progressive surround rewards - each agent joining is valuable
+        # Progressive surround rewards
         if new_surround_count > prev_surround_count:
-            # Increasing reward per agent (more agents = more valuable)
             reward += self.reward_new_surround * (new_surround_count - prev_surround_count)
         
-        # Bonus for achieving full surround (all agents within radius)
+        # New Surround
+        if new_surround_count >= numAgents and prev_surround_count < numAgents:
+            reward += 30.0
+        
+        # Keeping full surround
         if new_surround_count >= numAgents:
             reward += self.reward_surrounded
 
