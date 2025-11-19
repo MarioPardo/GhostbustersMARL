@@ -48,6 +48,7 @@ def main():
     print("Available metrics:", list(data.keys()))
 
     # --- Extract the three series we care about ---
+
     # 1) Episode length vs env steps
     steps_ep, vals_ep = extract_xy(data, "ep_length_mean")
 
@@ -55,14 +56,17 @@ def main():
     steps_ret, vals_ret = extract_xy(data, "return_mean")
 
     # 3) Q-values vs env steps
-    steps_q, vals_q = extract_xy(data, "q_taken_mean")
+    steps_loss, vals_loss = extract_xy(data, "loss")
 
-    # --- Create a single figure with 3 subplots ---
-    fig, axes = plt.subplots(3, 1, figsize=(10, 12), sharex=True)
+    # Sucess Metric
+    steps_succ, vals_succ = extract_xy(data, "test_success_mean")  # or "test_success_mean"
+
+    # --- Create a single figure with 4 subplots ---
+    fig, axes = plt.subplots(2, 2, figsize=(10, 12), sharex=True)
     fig.suptitle("Ghostbusters MARL Training Metrics", fontsize=16)
 
     # Subplot 1: Episode length
-    ax = axes[0]
+    ax = axes[0][0]
     if steps_ep is not None:
         ax.plot(steps_ep, vals_ep)
         ax.set_ylabel("ep_length_mean")
@@ -73,7 +77,7 @@ def main():
         ax.set_axis_off()
 
     # Subplot 2: Return
-    ax = axes[1]
+    ax = axes[0][1]
     if steps_ret is not None:
         ax.plot(steps_ret, vals_ret)
         ax.set_ylabel("return_mean")
@@ -83,16 +87,29 @@ def main():
         ax.text(0.5, 0.5, "return_mean missing", ha="center", va="center")
         ax.set_axis_off()
 
-    # Subplot 3: Q-values
-    ax = axes[2]
-    if steps_q is not None:
-        ax.plot(steps_q, vals_q)
+    # Subplot 3: Loss
+    ax = axes[1][0]
+    if vals_loss is not None:
+        ax.plot(steps_loss, vals_loss)
         ax.set_xlabel("env steps (t_env)")
-        ax.set_ylabel("q_taken_mean")
-        ax.set_title("Q-values of taken actions over training")
+        ax.set_ylabel("Loss")
+        ax.set_title("Loss over training")
         ax.grid(True)
     else:
-        ax.text(0.5, 0.5, "q_taken_mean missing", ha="center", va="center")
+        ax.text(0.5, 0.5, "Loss missing", ha="center", va="center")
+        ax.set_axis_off()
+
+    # Subplot 4: Success Rate
+    ax = axes[1][1]
+    if steps_succ is not None:
+        ax.plot(steps_succ, vals_succ)
+        ax.set_xlabel("env steps (t_env)")
+        ax.set_ylabel("success_mean")
+        ax.set_title("Success rate Test")
+        ax.grid(True)
+    
+    else:
+        ax.text(0.5, 0.5, "success mean missing", ha="center", va="center")
         ax.set_axis_off()
 
     plt.tight_layout(rect=[0, 0.03, 1, 0.95])

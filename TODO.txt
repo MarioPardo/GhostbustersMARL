@@ -4,10 +4,24 @@
     [X] pass in coordinates for agents, ghost
 
 
-[] Start Baseline
-    [] understand setup for PyMARL
+[x] Start Baseline
+    [x] understand setup for PyMARL
+    [x] implement checking available agent actions
+    [x] make extraction area big
+    [] move env params from constants file to env yaml file
+    [x] reduce time to kill
     [] reward structure
+        [x]reward for getting ghost closer to extraction area
+    [x] make ghost movement less erratic, easier to herd
+    [] randomize agent starting positions
 
+
+[] Modeling internal "thoughts" of agent
+   []available actions
+   []rewards 
+
+ 
+   
 
 [] Add Partial Observability
     [] ensure vision works for agents

@@ -1,11 +1,11 @@
 
 import Grid
-from Constants import ACTION_TO_DELTA
+from Constants import ACTION_TO_DELTA, VISIBILITY_RADIUS
 
 import random
 
 
-visibilityRadius = 2
+visibilityRadius = VISIBILITY_RADIUS
 
 class Agent:
 

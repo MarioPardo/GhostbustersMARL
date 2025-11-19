@@ -1,5 +1,5 @@
 import random
-from Constants import cheb_dist
+from Constants import *
 
 gridWidth = 30
 gridHeight = 30
@@ -8,18 +8,31 @@ class Ghost:
     """
     Minimal ghost entity for a MARL ghostbusters environment.
     """
-    def __init__(self, x,y):
+    def __init__(self, x,y,movementProb=1.0):
         self.x = x
         self.y = y
+        self.movementProb = movementProb  # Probability of moving each turn
 
-        self.Health = 90 #maybe use later on
-        self.avoidRadius = 5
+        self.avoidRadius = 3
 
 
     def move(self, agentCoords):
         """
         Move randomly, avoiding agents within avoidRadius (Chebyshev distance).
         """
+        
+        movementProb = self.movementProb
+        if movementProb <= 0:
+            return self.x, self.y  #stay put
+
+        #Decrease movement probability based on how surrounded the ghost is
+        movementPenalty = min(1, 0.2 * self.GetSurroundedCount(agentCoords))
+        movementProb = movementProb * movementPenalty
+        movementProb = max(movementProb, 0.0)
+        if random.random() > movementProb:
+            return self.x, self.y  #stay put
+
+
         # 8 directions + stay
         moves = [(-1,-1), (0,-1), (1,-1),
                  (-1, 0), (0, 0), (1, 0),
@@ -43,15 +56,12 @@ class Ghost:
         candidateMoves.sort(key=lambda p: min_dist_to_agents(p), reverse=True)
         occupied = set(agentCoords)
 
-        #If the closest agent is far enough, just move randomly
+        #If the closest agent is far enough, stay put
         if min_dist_to_agents((self.x, self.y)) > self.avoidRadius:
-            new_x, new_y = random.choice(candidateMoves)
-            self.x, self.y = new_x, new_y
-            return self.x, self.y
-
+            return self.x, self.y  #stay put
+        
         # Else, we avoid agents.
-        # Try moves best to worst
-        for nx, ny in candidateMoves:
+        for nx, ny in candidateMoves:  # Try moves best to worst
             if (nx, ny) not in occupied:
                 new_x, new_y = nx, ny
                 break
@@ -60,6 +70,18 @@ class Ghost:
 
         self.x, self.y = new_x, new_y
         return self.x, self.y
+    
+
+    def GetSurroundedCount(self, agentCoords):
+        """Update the counter for how long the ghost has been surrounded."""
+        ghost_x, ghost_y = self.x,self.y
+        surroundCounter = sum(
+            cheb_dist((a[0], a[1]), (ghost_x, ghost_y)) <= SURROUND_RADIUS
+            for a in agentCoords
+        )
+
+        return surroundCounter
+
 
 
 

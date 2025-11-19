@@ -23,8 +23,10 @@ class Grid:
 
     def __init__(
         self,
-        extractionX: int,
-        extractionY: int,
+        extractionTL_x: int,
+        extractionTL_y: int,
+        extractionBR_x: int,
+        extractionBR_y: int,
         visibilityRadius: int = Agent.visibilityRadius,
         width: int = gridWidth,
         height: int = gridHeight,
@@ -35,7 +37,9 @@ class Grid:
         self.agentCoords: List[Tuple[int, int]] = []
         self.ghostCoords: Optional[Tuple[int, int]] = None
 
-        self.extraction_point: Tuple[int, int] = (extractionX, extractionY)
+        self.extraction_area_tl: Tuple[int, int] = (extractionTL_x, extractionTL_y)
+        self.extraction_area_br: Tuple[int, int] = (extractionBR_x, extractionBR_y)
+        self.extraction_point_center = ((extractionTL_x + extractionBR_x) / 2.0, (extractionTL_y + extractionBR_y) / 2.0)
         self.visibilityRadius = visibilityRadius
 
         # Rendering state
@@ -100,9 +104,21 @@ class Grid:
                             pygame.draw.rect(surf, visionColor, self._cell_rect(x, y))
 
         # Extraction point
-        if self.extraction_point is not None:
-            ex, ey = self.extraction_point
-            pygame.draw.rect(surf, extractionColor, self._cell_rect(ex, ey))
+
+        tlx, tly = self.extraction_area_tl
+        brx, bry = self.extraction_area_br
+
+        # Ensure proper ordering and clip to grid bounds
+        xmin, xmax = sorted((tlx, brx))
+        ymin, ymax = sorted((tly, bry))
+        xmin = max(0, xmin)
+        xmax = min(self.width - 1, xmax)
+        ymin = max(0, ymin)
+        ymax = min(self.height - 1, ymax)
+
+        for x in range(xmin, xmax + 1):
+            for y in range(ymin, ymax + 1):
+                pygame.draw.rect(surf, extractionColor, self._cell_rect(x, y))
 
         # Agents (with indices)
         for i, (ax, ay) in enumerate(self.agentCoords):
