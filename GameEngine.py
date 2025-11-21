@@ -42,6 +42,8 @@ class GameEngine:
         self.reward_surrounded = reward_cfg.get("reward_surrounded", 20)
         self.lambda_quadrant_coverage = reward_cfg.get("lambda_quadrant_coverage", 2)
         self.reward_new_surround = reward_cfg.get("reward_new_surround", 5)
+        self.penalty_formation_break = reward_cfg.get("penalty_formation_break", 5.0)
+        self.reward_full_surround = reward_cfg.get("reward_full_surround", 30.0)
         self.win_reward = reward_cfg.get("reward_kill", 1000)
 
         self.timeToKill = TIME_TO_KILL
@@ -224,15 +226,19 @@ class GameEngine:
 
         ###
 
+        #Move Ghost FIRST (before agents) so agents can predict consequences
+        self.ghostCoords = self.ghost.move(self.agentCoords)
+
         #Apply agent moves
         for a, act_id in zip(self.agents, actions):
             a.apply_action(act_id)
         self.agentCoords = [(a.x, a.y) for a in self.agents]
 
         self.surroundCounter = self.ghost.GetSurroundedCount(self.agentCoords)
-
-        #Move Ghost
-        self.ghostCoords = self.ghost.move(self.agentCoords)
+        if(self.surroundCounter >= numAgents):
+            self.grid.setSurrendered(True)
+        else:
+            self.grid.setSurrendered(False)
 
         #Update Grid #rending purposes
         self.grid.setEntities(self.agentCoords, self.ghostCoords)
@@ -245,9 +251,11 @@ class GameEngine:
         return reward, terminated, info
 
     def globalReward(self, prev_d_ghost_extract, prev_d_ghost_agents, prev_surround_count):
-        reward = -0.01  # Tiny time penalty to encourage efficiency (won't dominate)
+        reward = -0.01  # Tiny time penalty to encourage efficiency 
         terminated = False
         success = False
+
+        self.calculateUsefulMetrics
 
         if self.surroundCounter >= numAgents:
             self.holdCounter += 1
@@ -256,12 +264,12 @@ class GameEngine:
 
         # End conditions
         if self.holdCounter >= self.timeToKill:
-            reward += self.win_reward  # HUGE success reward to make it unmissable
+            reward += self.win_reward 
             terminated = True
             success = True
         elif self.Time >= self.episodeLimit:
             terminated = True
-            # NO massive failure penalty - let shaped rewards guide learning
+
 
         if terminated:
             return reward, terminated, success
@@ -272,10 +280,9 @@ class GameEngine:
 
         #Reward for surrounding ghost
         reward += self.Surround_Reward(prev_surround_count)
-
-        #penalty for agents too close to each other (when NOT surrounding ghost)
-        if self.surroundCounter < numAgents:
-            reward += self.AgentClumpingPenalty()
+        
+        # Reward for spreading around ghost at different angles
+        reward += self.QuadrantCoverage_Reward()    
 
 
         return reward, terminated, success
@@ -302,12 +309,14 @@ class GameEngine:
         reward = 0.0
 
         # Closer to ghost = higher reward every step
-        max_dist = max(self.grid.width, self.grid.height) - 1
+        # Use Chebyshev distance to match surround logic!
+        max_dist = max(self.grid.width - 1, self.grid.height - 1)
         
         for a in self.agents:
             dist = cheb_dist((a.x, a.y), self.ghostCoords)
             norm_dist = dist / max_dist
-            reward += self.lambda_agent_dist_to_ghost * ((1.0 - norm_dist) ** 2) * 2.0 #exponential pull for stronger incentive 
+            # STRONGER exponential: cube instead of square for aggressive pull when close
+            reward += self.lambda_agent_dist_to_ghost * ((1.0 - norm_dist) ** 3) * 3.0
 
         return reward
     
@@ -315,23 +324,76 @@ class GameEngine:
         reward = 0.0
         new_surround_count = self.ghost.GetSurroundedCount(self.agentCoords)
 
-        # Progressive surround rewards
+        # Progressive surround rewards - BIG bonus for entering radius
         if new_surround_count > prev_surround_count:
-            reward += self.reward_new_surround * (new_surround_count - prev_surround_count)
+            reward += self.reward_new_surround * (new_surround_count - prev_surround_count) * 2.0
         
-        # New Surround
-        if new_surround_count >= numAgents and prev_surround_count < numAgents:
-            reward += 30.0
+        # PENALTY: Breaking formation (agents leaving surround) - REDUCED to encourage commitment
+        if new_surround_count < prev_surround_count:
+            penalty = self.penalty_formation_break * (prev_surround_count - new_surround_count) * 0.5
+            reward -= penalty
+        
         
         # Keeping full surround
         if new_surround_count >= numAgents:
-            reward += self.reward_surrounded
+            reward += self.reward_full_surround
 
         return reward
 
-    def calculateUsefulMetrics():
+    def QuadrantCoverage_Reward(self):
+        """
+        Reward agents for surrounding ghost from different cardinal directions.
+        Checks if agents are positioned left, right, above, or below the ghost.
+        Rewards scale with proximity - closer agents get higher rewards.
+        Always rewards coverage, not just when within surround radius.
+        """
         
+        gx, gy = self.ghostCoords
+        directions = [False, False, False, False]  # Left, Right, Above, Below
+        direction_distances = [float('inf'), float('inf'), float('inf'), float('inf')]  # Track closest agent per direction
+        max_dist = max(self.grid.width, self.grid.height) - 1
         
+        for ax, ay in self.agentCoords:
+            dx = ax - gx
+            dy = ay - gy
+            dist = cheb_dist((ax, ay), (gx, gy))
+            
+            # Determine primary direction (using dominance of dx vs dy)
+            if abs(dx) > abs(dy):  # Horizontal dominance
+                if dx > 0:
+                    directions[1] = True  # Right
+                    direction_distances[1] = min(direction_distances[1], dist)
+                else:
+                    directions[0] = True  # Left
+                    direction_distances[0] = min(direction_distances[0], dist)
+            else:  # Vertical dominance
+                if dy > 0:
+                    directions[2] = True  # Above
+                    direction_distances[2] = min(direction_distances[2], dist)
+                else:
+                    directions[3] = True  # Below
+                    direction_distances[3] = min(direction_distances[3], dist)
+        
+        # Calculate reward: base reward per direction, scaled by proximity
+        total_reward = 0.0
+        for i, covered in enumerate(directions):
+            if covered:
+                # EXPONENTIAL proximity: reward grows rapidly as agents get very close
+                normalized_dist = direction_distances[i] / max_dist
+                proximity_multiplier = (2.0 - normalized_dist) ** 2  
+                
+                total_reward += self.lambda_quadrant_coverage * proximity_multiplier
+        
+        return total_reward
+
+    def calculateUsefulMetrics(self):
+        
+        # Average Distance Agents to Ghost
+        total_dist = sum(cheb_dist((a.x, a.y), self.ghostCoords) for a in self.agents)
+        self.avgDistToGhost = total_dist / len(self.agents)
+        
+
+
         return
 
     def isExtracting(self, ghostCoords):
@@ -352,7 +414,7 @@ class GameEngine:
             self.grid.extraction_area_tl[0]/(W-1), self.grid.extraction_area_tl[1]/(H-1),
             self.grid.extraction_area_br[0]/(W-1), self.grid.extraction_area_br[1]/(H-1),
 
-            #Show Progress
+            #Show Progress - USE CHEBYSHEV to match surround logic!
             cheb_dist((ax, ay), (gx, gy)) / max(W-1, H-1),
             self.surroundCounter / numAgents,
             self.holdCounter / self.timeToKill
@@ -377,7 +439,7 @@ class GameEngine:
                 self.grid.extraction_area_br[0]/(W-1), self.grid.extraction_area_br[1]/(H-1),
                 
                 #Show Progress
-                cheb_dist((a.x, a.y), (gx, gy)) / max(W-1, H-1),
+                cheb_dist((a.x, a.y), (gx, gy)) / cheb_dist((0,0), (W-1,H-1) ),
                 self.surroundCounter / numAgents,
                 self.holdCounter / self.timeToKill
             ], dtype=np.float32)

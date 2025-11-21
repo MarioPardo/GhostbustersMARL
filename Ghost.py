@@ -13,7 +13,7 @@ class Ghost:
         self.y = y
         self.movementProb = movementProb  # Probability of moving each turn
 
-        self.avoidRadius = 3
+        self.avoidRadius = 3 
 
 
     def move(self, agentCoords):
@@ -26,8 +26,8 @@ class Ghost:
             return self.x, self.y  #stay put
 
         #Decrease movement probability based on how surrounded the ghost is
-        movementPenalty = min(1, 0.2 * self.GetSurroundedCount(agentCoords))
-        movementProb = movementProb * movementPenalty
+        movementPenalty = min(1, 0.1 * self.GetSurroundedCount(agentCoords))
+        movementProb = movementProb * (1-movementPenalty)
         movementProb = max(movementProb, 0.0)
         if random.random() > movementProb:
             return self.x, self.y  #stay put

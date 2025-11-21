@@ -55,6 +55,13 @@ class Grid:
         self.ghostCoords = ghostCoords
         return self.agentCoords, self.ghostCoords
 
+    def setSurrendered(self, surrendered: bool):
+        if surrendered and self.ghostCoords is not None:
+            self.ghostColor = (0,255,0)
+        else: 
+            self.ghostColor = (255, 255, 0)
+
+
     # ---------- Drawing ----------
 
     def init_display(self, cell_size: int = 20, caption: str = "Ghostbusters Grid") -> None:
@@ -82,7 +89,7 @@ class Grid:
     def draw_grid(self, show_grid_lines: bool = True) -> None:
         """Draw current grid state. Call after init_display()."""
         if self.surface is None:
-            raise RuntimeError("Call init_display() before draw_grid().")
+            self.init_display()
 
         surf = self.surface
         s = self.cell_size
