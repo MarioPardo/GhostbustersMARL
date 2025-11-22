@@ -1,0 +1,433 @@
+[INFO 14:33:10] pymarl Running command 'my_main'
+[INFO 14:33:10] pymarl Started run with ID "7"
+[DEBUG 14:33:10] pymarl Starting Heartbeat
+[DEBUG 14:33:10] my_main Started
+[INFO 14:33:10] my_main Experiment Parameters:
+[INFO 14:33:10] my_main 
+
+{   'action_selector': 'epsilon_greedy',
+    'add_value_last_step': True,
+    'agent': 'rnn',
+    'agent_output_type': 'q',
+    'batch_size': 64,
+    'batch_size_run': 1,
+    'buffer_cpu_only': True,
+    'buffer_size': 50000,
+    'checkpoint_path': '',
+    'common_reward': True,
+    'critic_lr': 0.0003,
+    'double_q': True,
+    'env': 'ghostbusters',
+    'env_args': {   'curriculum_stage': 3,
+                    'episode_limit': 400,
+                    'extraction_br': [   29,
+                                         29],
+                    'extraction_tl': [   25,
+                                         25],
+                    'ghost_move_prob': 1.0,
+                    'ghost_stationary': False,
+                    'height': 30,
+                    'key': 'ghostbusters_stage4',
+                    'lambda_agent_dist_to_ghost': 3.0,
+                    'lambda_ghost_dist_to_extraction': 1.0,
+                    'lambda_quadrant_coverage': 2,
+                    'map_name': 'ghostbusters_stage4',
+                    'n_agents': 3,
+                    'penalty_formation_break': 3.0,
+                    'render': False,
+                    'render_every': 50,
+                    'reward_full_surround': 15.0,
+                    'reward_is_extracting': 15,
+                    'reward_kill': 100,
+                    'reward_new_surround': 5,
+                    'seed': 681459667,
+                    'spawn_radius': 30,
+                    'transition_sigmoid_midpoint': 0.67,
+                    'transition_sigmoid_steepness': 10.0,
+                    'width': 30},
+    'epsilon_anneal_time': 200000,
+    'epsilon_finish': 0.05,
+    'epsilon_start': 1.0,
+    'evaluate': False,
+    'evaluation_epsilon': 0.1,
+    'gamma': 0.99,
+    'grad_norm_clip': 5,
+    'hidden_dim': 64,
+    'hypergroup': None,
+    'hypernet_embed': 64,
+    'hypernet_layers': 2,
+    'label': 'default_label',
+    'learner': 'q_learner',
+    'learner_log_interval': 2000,
+    'load_step': 0,
+    'local_results_path': 'results',
+    'log_interval': 2000,
+    'lr': 0.0003,
+    'mac': 'basic_mac',
+    'mask_before_softmax': False,
+    'mixer': 'qmix',
+    'mixing_embed_dim': 32,
+    'name': 'ghostbusters_qmix',
+    'obs_agent_id': False,
+    'obs_last_action': False,
+    'optim_alpha': 0.99,
+    'optim_eps': 1e-05,
+    'optimizer': 'adam',
+    'render': False,
+    'repeat_id': 1,
+    'reward_scalarisation': 'sum',
+    'reward_standardisation_alpha': 0.01,
+    'rnn_hidden_dim': 128,
+    'runner': 'episode',
+    'runner_log_interval': 2000,
+    'save_model': True,
+    'save_model_interval': 50000,
+    'save_replay': False,
+    'seed': 681459667,
+    'standardise_returns': False,
+    'standardise_rewards': True,
+    'state_last_action': False,
+    't_max': 500000,
+    'target_update_interval': 200,
+    'target_update_interval_or_tau': 200,
+    'tau': 0.005,
+    'test_greedy': True,
+    'test_interval': 10000,
+    'test_nepisode': 4,
+    'use_cuda': True,
+    'use_rnn': True,
+    'use_tensorboard': False,
+    'use_wandb': False,
+    'wandb_mode': 'offline',
+    'wandb_project': None,
+    'wandb_save_model': False,
+    'wandb_team': None}
+
+[GhostbustersEnv] Unused env args ignored: ['curriculum_stage', 'ghost_stationary', 'ghost_move_prob', 'spawn_radius', 'reward_kill', 'reward_new_surround', 'penalty_formation_break', 'reward_full_surround', 'lambda_quadrant_coverage', 'lambda_ghost_dist_to_extraction', 'lambda_agent_dist_to_ghost', 'reward_is_extracting', 'transition_sigmoid_midpoint', 'transition_sigmoid_steepness', 'render', 'render_every', 'reward_scalarisation']
+
+===== DEBUG ARGS =====
+action_selector: epsilon_greedy
+add_value_last_step: True
+agent: rnn
+agent_output_type: q
+batch_size: 64
+batch_size_run: 1
+buffer_cpu_only: True
+buffer_size: 50000
+checkpoint_path: 
+common_reward: True
+critic_lr: 0.0003
+device: cuda
+double_q: True
+env: ghostbusters
+env_args: {'n_agents': 3, 'episode_limit': 400, 'width': 30, 'height': 30, 'extraction_tl': [25, 25], 'extraction_br': [29, 29], 'seed': 681459667, 'curriculum_stage': 3, 'ghost_stationary': False, 'ghost_move_prob': 1.0, 'spawn_radius': 30, 'reward_kill': 100, 'reward_new_surround': 5, 'penalty_formation_break': 3.0, 'reward_full_surround': 15.0, 'lambda_quadrant_coverage': 2, 'lambda_ghost_dist_to_extraction': 1.0, 'lambda_agent_dist_to_ghost': 3.0, 'reward_is_extracting': 15, 'transition_sigmoid_midpoint': 0.67, 'transition_sigmoid_steepness': 10.0, 'map_name': 'ghostbusters_stage4', 'key': 'ghostbusters_stage4', 'render': False, 'render_every': 50}
+epsilon_anneal_time: 200000
+epsilon_finish: 0.05
+epsilon_start: 1.0
+evaluate: False
+evaluation_epsilon: 0.1
+gamma: 0.99
+grad_norm_clip: 5
+hidden_dim: 64
+hypergroup: None
+hypernet_embed: 64
+hypernet_layers: 2
+label: default_label
+learner: q_learner
+learner_log_interval: 2000
+load_step: 0
+local_results_path: results
+log_interval: 2000
+lr: 0.0003
+mac: basic_mac
+mask_before_softmax: False
+mixer: qmix
+mixing_embed_dim: 32
+n_actions: 9
+n_agents: 3
+name: ghostbusters_qmix
+obs_agent_id: False
+obs_last_action: False
+optim_alpha: 0.99
+optim_eps: 1e-05
+optimizer: adam
+render: False
+repeat_id: 1
+reward_scalarisation: sum
+reward_standardisation_alpha: 0.01
+rnn_hidden_dim: 128
+runner: episode
+runner_log_interval: 2000
+save_model: True
+save_model_interval: 50000
+save_replay: False
+seed: 681459667
+standardise_returns: False
+standardise_rewards: True
+state_last_action: False
+state_shape: 17
+t_max: 500000
+target_update_interval: 200
+target_update_interval_or_tau: 200
+tau: 0.005
+test_greedy: True
+test_interval: 10000
+test_nepisode: 4
+unique_token: ghostbusters_qmix_seed681459667_ghostbusters_stage4_2025-11-22 14:33:10.267070
+use_cuda: True
+use_rnn: True
+use_tensorboard: False
+use_wandb: False
+wandb_mode: offline
+wandb_project: None
+wandb_save_model: False
+wandb_team: None
+======================
+
+[INFO 14:33:12] my_main Beginning training for 500000 timesteps
+/home/mariop/Documents/Programming/school/GhostbustersMARL/pymarl/src/components/episode_buffer.py:93: UserWarning: Using a non-tuple sequence for multidimensional indexing is deprecated and will be changed in pytorch 2.9; use x[tuple(seq)] instead of x[seq]. In pytorch 2.9 this will be interpreted as tensor index, x[torch.tensor(seq)], which will result either in an error or a different result (Triggered internally at /pytorch/torch/csrc/autograd/python_variable_indexing.cpp:345.)
+  target["filled"][slices] = 1
+/home/mariop/Documents/Programming/school/GhostbustersMARL/pymarl/src/components/episode_buffer.py:105: UserWarning: Using a non-tuple sequence for multidimensional indexing is deprecated and will be changed in pytorch 2.9; use x[tuple(seq)] instead of x[seq]. In pytorch 2.9 this will be interpreted as tensor index, x[torch.tensor(seq)], which will result either in an error or a different result (Triggered internally at /pytorch/torch/csrc/autograd/python_variable_indexing.cpp:345.)
+  self._check_safe_view(v, target[k][_slices])
+/home/mariop/Documents/Programming/school/GhostbustersMARL/pymarl/src/components/episode_buffer.py:106: UserWarning: Using a non-tuple sequence for multidimensional indexing is deprecated and will be changed in pytorch 2.9; use x[tuple(seq)] instead of x[seq]. In pytorch 2.9 this will be interpreted as tensor index, x[torch.tensor(seq)], which will result either in an error or a different result (Triggered internally at /pytorch/torch/csrc/autograd/python_variable_indexing.cpp:345.)
+  target[k][_slices] = v.view_as(target[k][_slices])
+/home/mariop/Documents/Programming/school/GhostbustersMARL/pymarl/src/components/episode_buffer.py:110: UserWarning: Using a non-tuple sequence for multidimensional indexing is deprecated and will be changed in pytorch 2.9; use x[tuple(seq)] instead of x[seq]. In pytorch 2.9 this will be interpreted as tensor index, x[torch.tensor(seq)], which will result either in an error or a different result (Triggered internally at /pytorch/torch/csrc/autograd/python_variable_indexing.cpp:345.)
+  v = target[k][_slices]
+/home/mariop/Documents/Programming/school/GhostbustersMARL/pymarl/src/components/episode_buffer.py:113: UserWarning: Using a non-tuple sequence for multidimensional indexing is deprecated and will be changed in pytorch 2.9; use x[tuple(seq)] instead of x[seq]. In pytorch 2.9 this will be interpreted as tensor index, x[torch.tensor(seq)], which will result either in an error or a different result (Triggered internally at /pytorch/torch/csrc/autograd/python_variable_indexing.cpp:345.)
+  target[new_k][_slices] = v.view_as(target[new_k][_slices])
+[INFO 14:33:13] my_main t_env: 400 / 500000
+[INFO 14:33:13] my_main Estimated time left: 34 seconds. Time passed: 0 seconds
+[INFO 14:33:15] my_main Saving models to results/models/ghostbusters_qmix_seed681459667_ghostbusters_stage4_2025-11-22 14:33:10.267070/400
+[INFO 14:33:17] my_main Recent Stats | t_env:       2000 | Episode:        5
+ep_length_mean:          400.0000	epsilon:                   1.0000	hold_mean:                 0.0000	return_mean:             386.4367
+return_std:                0.0000	success_mean:              0.0000	t_mean:                  400.0000	test_ep_length_mean:     400.0000
+test_hold_mean:            0.0000	test_return_mean:        3505.9608	test_return_std:         1971.9234	test_success_mean:         0.0000
+test_t_mean:             400.0000	
+[INFO 14:33:20] my_main Recent Stats | t_env:       4000 | Episode:       10
+ep_length_mean:          400.0000	epsilon:                   0.9905	hold_mean:                 0.0000	return_mean:             688.0507
+return_std:              440.9979	success_mean:              0.0000	t_mean:                  400.0000	test_ep_length_mean:     400.0000
+test_hold_mean:            0.0000	test_return_mean:        3505.9608	test_return_std:         1971.9234	test_success_mean:         0.0000
+test_t_mean:             400.0000	
+[INFO 14:33:23] my_main Recent Stats | t_env:       6000 | Episode:       15
+ep_length_mean:          400.0000	epsilon:                   0.9810	hold_mean:                 0.0000	return_mean:             752.4005
+return_std:              694.5200	success_mean:              0.0000	t_mean:                  400.0000	test_ep_length_mean:     400.0000
+test_hold_mean:            0.0000	test_return_mean:        3505.9608	test_return_std:         1971.9234	test_success_mean:         0.0000
+test_t_mean:             400.0000	
+[INFO 14:33:26] my_main Recent Stats | t_env:       8000 | Episode:       20
+ep_length_mean:          400.0000	epsilon:                   0.9715	hold_mean:                 0.0000	return_mean:             824.8801
+return_std:              703.4012	success_mean:              0.0000	t_mean:                  400.0000	test_ep_length_mean:     400.0000
+test_hold_mean:            0.0000	test_return_mean:        3505.9608	test_return_std:         1971.9234	test_success_mean:         0.0000
+test_t_mean:             400.0000	
+[INFO 14:33:28] my_main Recent Stats | t_env:      10000 | Episode:       25
+ep_length_mean:          400.0000	epsilon:                   0.9620	hold_mean:                 0.0000	return_mean:             832.1277
+return_std:              670.6196	success_mean:              0.0000	t_mean:                  400.0000	test_ep_length_mean:     400.0000
+test_hold_mean:            0.0000	test_return_mean:        3505.9608	test_return_std:         1971.9234	test_success_mean:         0.0000
+test_t_mean:             400.0000	
+[INFO 14:33:29] my_main t_env: 10400 / 500000
+[INFO 14:33:29] my_main Estimated time left: 12 minutes, 49 seconds. Time passed: 16 seconds
+[INFO 14:33:33] my_main Recent Stats | t_env:      12000 | Episode:       30
+ep_length_mean:          400.0000	epsilon:                   0.9525	hold_mean:                 0.0000	return_mean:             786.8397
+return_std:              786.6774	success_mean:              0.0000	t_mean:                  400.0000	test_ep_length_mean:     400.0000
+test_hold_mean:            0.0000	test_return_mean:        3705.5470	test_return_std:         1566.8444	test_success_mean:         0.0000
+test_t_mean:             400.0000	
+[INFO 14:33:36] my_main Recent Stats | t_env:      14000 | Episode:       35
+ep_length_mean:          400.0000	epsilon:                   0.9430	hold_mean:                 0.0000	return_mean:             603.4937
+return_std:              697.1809	success_mean:              0.0000	t_mean:                  400.0000	test_ep_length_mean:     400.0000
+test_hold_mean:            0.0000	test_return_mean:        3705.5470	test_return_std:         1566.8444	test_success_mean:         0.0000
+test_t_mean:             400.0000	
+[INFO 14:33:39] my_main Recent Stats | t_env:      16000 | Episode:       40
+ep_length_mean:          400.0000	epsilon:                   0.9335	hold_mean:                 0.0000	return_mean:             751.2947
+return_std:              716.4805	success_mean:              0.0000	t_mean:                  400.0000	test_ep_length_mean:     400.0000
+test_hold_mean:            0.0000	test_return_mean:        3705.5470	test_return_std:         1566.8444	test_success_mean:         0.0000
+test_t_mean:             400.0000	
+[INFO 14:33:41] my_main Recent Stats | t_env:      18000 | Episode:       45
+ep_length_mean:          400.0000	epsilon:                   0.9240	hold_mean:                 0.0000	return_mean:             748.0522
+return_std:              738.9133	success_mean:              0.0000	t_mean:                  400.0000	test_ep_length_mean:     400.0000
+test_hold_mean:            0.0000	test_return_mean:        3705.5470	test_return_std:         1566.8444	test_success_mean:         0.0000
+test_t_mean:             400.0000	
+[INFO 14:33:44] my_main Recent Stats | t_env:      20000 | Episode:       50
+ep_length_mean:          400.0000	epsilon:                   0.9145	hold_mean:                 0.0000	return_mean:             863.7634
+return_std:              787.1965	success_mean:              0.0000	t_mean:                  400.0000	test_ep_length_mean:     400.0000
+test_hold_mean:            0.0000	test_return_mean:        3705.5470	test_return_std:         1566.8444	test_success_mean:         0.0000
+test_t_mean:             400.0000	
+[INFO 14:33:44] my_main t_env: 20400 / 500000
+[INFO 14:33:44] my_main Estimated time left: 12 minutes, 23 seconds. Time passed: 31 seconds
+[INFO 14:33:49] my_main Recent Stats | t_env:      22000 | Episode:       55
+ep_length_mean:          400.0000	epsilon:                   0.9050	hold_mean:                 0.0000	return_mean:             1111.0813
+return_std:              798.1770	success_mean:              0.0000	t_mean:                  400.0000	test_ep_length_mean:     400.0000
+test_hold_mean:            0.0000	test_return_mean:        3741.4196	test_return_std:         1814.6756	test_success_mean:         0.0000
+test_t_mean:             400.0000	
+[INFO 14:33:51] my_main Recent Stats | t_env:      24000 | Episode:       60
+ep_length_mean:          400.0000	epsilon:                   0.8955	hold_mean:                 0.0000	return_mean:             1347.2815
+return_std:              989.8713	success_mean:              0.0000	t_mean:                  400.0000	test_ep_length_mean:     400.0000
+test_hold_mean:            0.0000	test_return_mean:        3741.4196	test_return_std:         1814.6756	test_success_mean:         0.0000
+test_t_mean:             400.0000	
+/home/mariop/Documents/Programming/school/GhostbustersMARL/pymarl/src/components/episode_buffer.py:152: UserWarning: Using a non-tuple sequence for multidimensional indexing is deprecated and will be changed in pytorch 2.9; use x[tuple(seq)] instead of x[seq]. In pytorch 2.9 this will be interpreted as tensor index, x[torch.tensor(seq)], which will result either in an error or a different result (Triggered internally at /pytorch/torch/csrc/autograd/python_variable_indexing.cpp:345.)
+  new_data.transition_data[k] = v[item]
+[INFO 14:33:55] my_main Recent Stats | t_env:      26000 | Episode:       65
+ep_length_mean:          400.0000	epsilon:                   0.8860	grad_norm:                 2.3935	hold_mean:                 0.0000
+loss:                      1.0141	q_taken_mean:              0.2328	return_mean:             1482.4730	return_std:              899.6149
+success_mean:              0.0000	t_mean:                  400.0000	target_mean:               0.3025	td_error_abs:              0.6861
+test_ep_length_mean:     400.0000	test_hold_mean:            0.0000	test_return_mean:        3741.4196	test_return_std:         1814.6756
+test_success_mean:         0.0000	test_t_mean:             400.0000	
+[INFO 14:34:00] my_main Recent Stats | t_env:      28000 | Episode:       70
+ep_length_mean:          400.0000	epsilon:                   0.8765	grad_norm:                 1.9628	hold_mean:                 0.0000
+loss:                      0.9862	q_taken_mean:              0.2652	return_mean:             1575.5129	return_std:              994.9324
+success_mean:              0.0000	t_mean:                  400.0000	target_mean:               0.2995	td_error_abs:              0.6949
+test_ep_length_mean:     400.0000	test_hold_mean:            0.0000	test_return_mean:        3741.4196	test_return_std:         1814.6756
+test_success_mean:         0.0000	test_t_mean:             400.0000	
+[INFO 14:34:04] my_main Recent Stats | t_env:      30000 | Episode:       75
+ep_length_mean:          400.0000	epsilon:                   0.8670	grad_norm:                 1.7463	hold_mean:                 0.0000
+loss:                      0.9505	q_taken_mean:              0.2732	return_mean:             1412.8655	return_std:              1077.2983
+success_mean:              0.0000	t_mean:                  400.0000	target_mean:               0.2978	td_error_abs:              0.6860
+test_ep_length_mean:     400.0000	test_hold_mean:            0.0000	test_return_mean:        3741.4196	test_return_std:         1814.6756
+test_success_mean:         0.0000	test_t_mean:             400.0000	
+[INFO 14:34:05] my_main t_env: 30400 / 500000
+[INFO 14:34:05] my_main Estimated time left: 16 minutes, 18 seconds. Time passed: 52 seconds
+[INFO 14:34:11] my_main Recent Stats | t_env:      32000 | Episode:       80
+ep_length_mean:          400.0000	epsilon:                   0.8575	grad_norm:                 1.6027	hold_mean:                 0.0000
+loss:                      0.9108	q_taken_mean:              0.2739	return_mean:             1246.8256	return_std:              1100.8777
+success_mean:              0.0000	t_mean:                  400.0000	target_mean:               0.2966	td_error_abs:              0.6676
+test_ep_length_mean:     400.0000	test_hold_mean:            0.0000	test_return_mean:        2633.2629	test_return_std:         1694.4894
+test_success_mean:         0.0000	test_t_mean:             400.0000	
+[INFO 14:34:16] my_main Recent Stats | t_env:      34000 | Episode:       85
+ep_length_mean:          400.0000	epsilon:                   0.8480	grad_norm:                 1.5295	hold_mean:                 0.0000
+loss:                      0.8782	q_taken_mean:              0.2731	return_mean:             1190.2359	return_std:              1016.1684
+success_mean:              0.0000	t_mean:                  400.0000	target_mean:               0.2959	td_error_abs:              0.6507
+test_ep_length_mean:     400.0000	test_hold_mean:            0.0000	test_return_mean:        2633.2629	test_return_std:         1694.4894
+test_success_mean:         0.0000	test_t_mean:             400.0000	
+[INFO 14:34:21] my_main Recent Stats | t_env:      36000 | Episode:       90
+ep_length_mean:          400.0000	epsilon:                   0.8385	grad_norm:                 1.2770	hold_mean:                 0.0000
+loss:                      0.8250	q_taken_mean:              0.2850	return_mean:             1252.0389	return_std:              1160.8178
+success_mean:              0.0000	t_mean:                  400.0000	target_mean:               0.2960	td_error_abs:              0.6322
+test_ep_length_mean:     400.0000	test_hold_mean:            0.0000	test_return_mean:        2633.2629	test_return_std:         1694.4894
+test_success_mean:         0.0000	test_t_mean:             400.0000	
+[INFO 14:34:25] my_main Recent Stats | t_env:      38000 | Episode:       95
+ep_length_mean:          400.0000	epsilon:                   0.8290	grad_norm:                 1.2147	hold_mean:                 0.0000
+loss:                      0.7700	q_taken_mean:              0.2851	return_mean:             1295.5131	return_std:              1204.0473
+success_mean:              0.0000	t_mean:                  400.0000	target_mean:               0.2958	td_error_abs:              0.6077
+test_ep_length_mean:     400.0000	test_hold_mean:            0.0000	test_return_mean:        2633.2629	test_return_std:         1694.4894
+test_success_mean:         0.0000	test_t_mean:             400.0000	
+[INFO 14:34:30] my_main Recent Stats | t_env:      40000 | Episode:      100
+ep_length_mean:          400.0000	epsilon:                   0.8195	grad_norm:                 1.1656	hold_mean:                 0.0000
+loss:                      0.7214	q_taken_mean:              0.2791	return_mean:             1281.1691	return_std:              1161.3517
+success_mean:              0.0000	t_mean:                  400.0000	target_mean:               0.2920	td_error_abs:              0.5784
+test_ep_length_mean:     400.0000	test_hold_mean:            0.0000	test_return_mean:        2633.2629	test_return_std:         1694.4894
+test_success_mean:         0.0000	test_t_mean:             400.0000	
+[INFO 14:34:31] my_main t_env: 40400 / 500000
+[INFO 14:34:31] my_main Estimated time left: 19 minutes, 56 seconds. Time passed: 1 minutes, 18 seconds
+[INFO 14:34:38] my_main Recent Stats | t_env:      42000 | Episode:      105
+ep_length_mean:          400.0000	epsilon:                   0.8100	grad_norm:                 1.2639	hold_mean:                 0.0000
+loss:                      0.6909	q_taken_mean:              0.2745	return_mean:             1304.9310	return_std:              1142.3069
+success_mean:              0.0000	t_mean:                  400.0000	target_mean:               0.2914	td_error_abs:              0.5523
+test_ep_length_mean:     400.0000	test_hold_mean:            0.0000	test_return_mean:        2423.1472	test_return_std:         1747.2010
+test_success_mean:         0.0000	test_t_mean:             400.0000	
+[INFO 14:34:43] my_main Recent Stats | t_env:      44000 | Episode:      110
+ep_length_mean:          400.0000	epsilon:                   0.8005	grad_norm:                 1.2250	hold_mean:                 0.0000
+loss:                      0.6474	q_taken_mean:              0.2737	return_mean:             1436.1087	return_std:              1186.1520
+success_mean:              0.0000	t_mean:                  400.0000	target_mean:               0.2841	td_error_abs:              0.5299
+test_ep_length_mean:     400.0000	test_hold_mean:            0.0000	test_return_mean:        2423.1472	test_return_std:         1747.2010
+test_success_mean:         0.0000	test_t_mean:             400.0000	
+[INFO 14:34:47] my_main Recent Stats | t_env:      46000 | Episode:      115
+ep_length_mean:          400.0000	epsilon:                   0.7910	grad_norm:                 1.2782	hold_mean:                 0.0000
+loss:                      0.6082	q_taken_mean:              0.2617	return_mean:             1272.4560	return_std:              969.0862
+success_mean:              0.0000	t_mean:                  400.0000	target_mean:               0.2661	td_error_abs:              0.5071
+test_ep_length_mean:     400.0000	test_hold_mean:            0.0000	test_return_mean:        2423.1472	test_return_std:         1747.2010
+test_success_mean:         0.0000	test_t_mean:             400.0000	
+[INFO 14:34:52] my_main Recent Stats | t_env:      48000 | Episode:      120
+ep_length_mean:          400.0000	epsilon:                   0.7815	grad_norm:                 1.2595	hold_mean:                 0.0000
+loss:                      0.5641	q_taken_mean:              0.2424	return_mean:             908.0119	return_std:              828.9271
+success_mean:              0.0000	t_mean:                  400.0000	target_mean:               0.2501	td_error_abs:              0.4728
+test_ep_length_mean:     400.0000	test_hold_mean:            0.0000	test_return_mean:        2423.1472	test_return_std:         1747.2010
+test_success_mean:         0.0000	test_t_mean:             400.0000	
+[INFO 14:34:57] my_main Recent Stats | t_env:      50000 | Episode:      125
+ep_length_mean:          400.0000	epsilon:                   0.7720	grad_norm:                 1.3395	hold_mean:                 0.0000
+loss:                      0.5094	q_taken_mean:              0.2436	return_mean:             820.3816	return_std:              776.6867
+success_mean:              0.0000	t_mean:                  400.0000	target_mean:               0.2429	td_error_abs:              0.4483
+test_ep_length_mean:     400.0000	test_hold_mean:            0.0000	test_return_mean:        2423.1472	test_return_std:         1747.2010
+test_success_mean:         0.0000	test_t_mean:             400.0000	
+[INFO 14:34:58] my_main t_env: 50400 / 500000
+[INFO 14:34:58] my_main Estimated time left: 20 minutes, 17 seconds. Time passed: 1 minutes, 45 seconds
+[INFO 14:35:01] my_main Saving models to results/models/ghostbusters_qmix_seed681459667_ghostbusters_stage4_2025-11-22 14:33:10.267070/50400
+[INFO 14:35:05] my_main Recent Stats | t_env:      52000 | Episode:      130
+ep_length_mean:          400.0000	epsilon:                   0.7625	grad_norm:                 1.1397	hold_mean:                 0.0000
+loss:                      0.4557	q_taken_mean:              0.2413	return_mean:             959.7765	return_std:              834.4501
+success_mean:              0.0000	t_mean:                  400.0000	target_mean:               0.2351	td_error_abs:              0.4270
+test_ep_length_mean:     400.0000	test_hold_mean:            0.0000	test_return_mean:        1813.0955	test_return_std:         1521.2915
+test_success_mean:         0.0000	test_t_mean:             400.0000	
+[INFO 14:35:10] my_main Recent Stats | t_env:      54000 | Episode:      135
+ep_length_mean:          400.0000	epsilon:                   0.7530	grad_norm:                 1.1077	hold_mean:                 0.0000
+loss:                      0.4229	q_taken_mean:              0.2438	return_mean:             982.7807	return_std:              906.1284
+success_mean:              0.0000	t_mean:                  400.0000	target_mean:               0.2377	td_error_abs:              0.4075
+test_ep_length_mean:     400.0000	test_hold_mean:            0.0000	test_return_mean:        1813.0955	test_return_std:         1521.2915
+test_success_mean:         0.0000	test_t_mean:             400.0000	
+[INFO 14:35:15] my_main Recent Stats | t_env:      56000 | Episode:      140
+ep_length_mean:          400.0000	epsilon:                   0.7435	grad_norm:                 1.0740	hold_mean:                 0.0000
+loss:                      0.3868	q_taken_mean:              0.2539	return_mean:             974.5262	return_std:              1130.1801
+success_mean:              0.0000	t_mean:                  400.0000	target_mean:               0.2480	td_error_abs:              0.3862
+test_ep_length_mean:     400.0000	test_hold_mean:            0.0000	test_return_mean:        1813.0955	test_return_std:         1521.2915
+test_success_mean:         0.0000	test_t_mean:             400.0000	
+[INFO 14:35:20] my_main Recent Stats | t_env:      58000 | Episode:      145
+ep_length_mean:          400.0000	epsilon:                   0.7340	grad_norm:                 1.2109	hold_mean:                 0.0000
+loss:                      0.3560	q_taken_mean:              0.2637	return_mean:             1135.2342	return_std:              1151.5477
+success_mean:              0.0000	t_mean:                  400.0000	target_mean:               0.2603	td_error_abs:              0.3743
+test_ep_length_mean:     400.0000	test_hold_mean:            0.0000	test_return_mean:        1813.0955	test_return_std:         1521.2915
+test_success_mean:         0.0000	test_t_mean:             400.0000	
+[INFO 14:35:25] my_main Recent Stats | t_env:      60000 | Episode:      150
+ep_length_mean:          400.0000	epsilon:                   0.7245	grad_norm:                 1.2424	hold_mean:                 0.0000
+loss:                      0.3490	q_taken_mean:              0.2583	return_mean:             1690.3862	return_std:              1197.6958
+success_mean:              0.0000	t_mean:                  400.0000	target_mean:               0.2646	td_error_abs:              0.3649
+test_ep_length_mean:     400.0000	test_hold_mean:            0.0000	test_return_mean:        1813.0955	test_return_std:         1521.2915
+test_success_mean:         0.0000	test_t_mean:             400.0000	
+[INFO 14:35:26] my_main t_env: 60400 / 500000
+[INFO 14:35:26] my_main Estimated time left: 19 minutes, 57 seconds. Time passed: 2 minutes, 13 seconds
+[INFO 14:35:32] my_main Recent Stats | t_env:      62000 | Episode:      155
+ep_length_mean:          400.0000	epsilon:                   0.7150	grad_norm:                 1.2776	hold_mean:                 0.0000
+loss:                      0.3428	q_taken_mean:              0.2652	return_mean:             1706.4706	return_std:              1176.2169
+success_mean:              0.0000	t_mean:                  400.0000	target_mean:               0.2667	td_error_abs:              0.3621
+test_ep_length_mean:     400.0000	test_hold_mean:            0.0000	test_return_mean:        1507.5671	test_return_std:         1618.5304
+test_success_mean:         0.0000	test_t_mean:             400.0000	
+[INFO 14:35:37] my_main Recent Stats | t_env:      64000 | Episode:      160
+ep_length_mean:          400.0000	epsilon:                   0.7055	grad_norm:                 1.2065	hold_mean:                 0.0000
+loss:                      0.3331	q_taken_mean:              0.2634	return_mean:             1911.4696	return_std:              1083.9168
+success_mean:              0.0000	t_mean:                  400.0000	target_mean:               0.2680	td_error_abs:              0.3578
+test_ep_length_mean:     400.0000	test_hold_mean:            0.0000	test_return_mean:        1507.5671	test_return_std:         1618.5304
+test_success_mean:         0.0000	test_t_mean:             400.0000	
+[INFO 14:35:42] my_main Recent Stats | t_env:      66000 | Episode:      165
+ep_length_mean:          400.0000	epsilon:                   0.6960	grad_norm:                 1.0777	hold_mean:                 0.0000
+loss:                      0.3310	q_taken_mean:              0.2583	return_mean:             2012.3657	return_std:              930.7042
+success_mean:              0.0000	t_mean:                  400.0000	target_mean:               0.2679	td_error_abs:              0.3540
+test_ep_length_mean:     400.0000	test_hold_mean:            0.0000	test_return_mean:        1507.5671	test_return_std:         1618.5304
+test_success_mean:         0.0000	test_t_mean:             400.0000	
+[INFO 14:35:47] my_main Recent Stats | t_env:      68000 | Episode:      170
+ep_length_mean:          400.0000	epsilon:                   0.6865	grad_norm:                 0.8244	hold_mean:                 0.0000
+loss:                      0.3342	q_taken_mean:              0.2658	return_mean:             2640.2357	return_std:              835.1648
+success_mean:              0.0000	t_mean:                  400.0000	target_mean:               0.2701	td_error_abs:              0.3561
+test_ep_length_mean:     400.0000	test_hold_mean:            0.0000	test_return_mean:        1507.5671	test_return_std:         1618.5304
+test_success_mean:         0.0000	test_t_mean:             400.0000	
+[INFO 14:35:52] my_main Recent Stats | t_env:      70000 | Episode:      175
+ep_length_mean:          400.0000	epsilon:                   0.6770	grad_norm:                 0.5865	hold_mean:                 0.0000
+loss:                      0.3428	q_taken_mean:              0.2758	return_mean:             2876.0796	return_std:              853.9400
+success_mean:              0.0000	t_mean:                  400.0000	target_mean:               0.2760	td_error_abs:              0.3564
+test_ep_length_mean:     400.0000	test_hold_mean:            0.0000	test_return_mean:        1507.5671	test_return_std:         1618.5304
+test_success_mean:         0.0000	test_t_mean:             400.0000	
+[INFO 14:35:53] my_main t_env: 70400 / 500000
+[INFO 14:35:53] my_main Estimated time left: 19 minutes, 31 seconds. Time passed: 2 minutes, 40 seconds
+[INFO 14:35:59] my_main Recent Stats | t_env:      72000 | Episode:      180
+ep_length_mean:          400.0000	epsilon:                   0.6675	grad_norm:                 0.5223	hold_mean:                 0.0000
+loss:                      0.3423	q_taken_mean:              0.2811	return_mean:             3336.6129	return_std:              757.6899
+success_mean:              0.0000	t_mean:                  400.0000	target_mean:               0.2837	td_error_abs:              0.3540
+test_ep_length_mean:     400.0000	test_hold_mean:            0.0000	test_return_mean:        1594.3448	test_return_std:         1364.5353
+test_success_mean:         0.0000	test_t_mean:             400.0000	
+[INFO 14:36:04] my_main Recent Stats | t_env:      74000 | Episode:      185
+ep_length_mean:          400.0000	epsilon:                   0.6580	grad_norm:                 0.6051	hold_mean:                 0.0000
+loss:                      0.3480	q_taken_mean:              0.2775	return_mean:             3469.0132	return_std:              775.1704
+success_mean:              0.0000	t_mean:                  400.0000	target_mean:               0.2772	td_error_abs:              0.3537
+test_ep_length_mean:     400.0000	test_hold_mean:            0.0000	test_return_mean:        1594.3448	test_return_std:         1364.5353
+test_success_mean:         0.0000	test_t_mean:             400.0000	
+[INFO 14:36:09] my_main Recent Stats | t_env:      76000 | Episode:      190
+ep_length_mean:          400.0000	epsilon:                   0.6485	grad_norm:                 0.7362	hold_mean:                 0.0000
+loss:                      0.3516	q_taken_mean:              0.2852	return_mean:             3616.7051	return_std:              641.2359
+success_mean:              0.0000	t_mean:                  400.0000	target_mean:               0.2875	td_error_abs:              0.3552
+test_ep_length_mean:     400.0000	test_hold_mean:            0.0000	test_return_mean:        1594.3448	test_return_std:         1364.5353
+test_success_mean:         0.0000	test_t_mean:             400.0000	

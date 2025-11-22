@@ -1,0 +1,38 @@
+#in Stage 3 we learned how to surround the ghost. Now we will start learning how to extract it.
+# CURRICULUM STAGE 4: Full Difficulty with Extraction
+
+
+env: ghostbusters
+
+env_args:
+  n_agents: 3
+  episode_limit: 400
+  width: 30
+  height: 30
+  extraction_tl : [25, 25]
+  extraction_br : [29, 29]
+  seed: 0
+
+  # Full difficulty
+  curriculum_stage: 3
+  ghost_move_prob: 1.0     # Ghost uses full evasion logic
+  spawn_radius: 30         # Random spawn anywhere
+
+ #reward
+  reward_kill: 100          
+  reward_new_surround: 3            # REDUCED from 5 - surrounding is too rewarding
+  penalty_formation_break: 2.0      # REDUCED from 3.0 - less harsh
+  reward_full_surround: 3.0        
+  lambda_quadrant_coverage: 1.5     
+  lambda_ghost_dist_to_extraction: 2.0  
+  lambda_agent_dist_to_ghost: 2.0   
+  reward_is_extracting: 20   
+
+  transition_sigmoid_midpoint: 0.67
+  transition_sigmoid_steepness: 10.0
+
+  map_name: ghostbusters_stage4
+  key: ghostbusters_stage4
+
+  render: False
+  render_every: 1

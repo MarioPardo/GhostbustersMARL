@@ -13,8 +13,11 @@
     [] reward structure
         [x]reward for getting ghost closer to extraction area
     [x] make ghost movement less erratic, easier to herd
-    [] randomize agent starting positions
+    [x] randomize agent starting positions
 
+[]Stage 2
+    [] Encourage surrounding on all sides
+    [] Penalize surround->unsurround->surround (repeat)
 
 [] Modeling internal "thoughts" of agent
    []available actions

@@ -1,4 +1,3 @@
-import pygame
 from typing import Iterable, Optional, Tuple, List
 
 import Agent
@@ -42,10 +41,10 @@ class Grid:
         self.extraction_point_center = ((extractionTL_x + extractionBR_x) / 2.0, (extractionTL_y + extractionBR_y) / 2.0)
         self.visibilityRadius = visibilityRadius
 
-        # Rendering state
+        # Rendering state (pygame imported lazily only when needed)
         self.cell_size: int = 20
-        self.surface: Optional[pygame.Surface] = None
-        self._font_small: Optional[pygame.font.Font] = None
+        self.surface: Optional[any] = None  # pygame.Surface when initialized
+        self._font_small: Optional[any] = None  # pygame.font.Font when initialized
 
 
     # ---------- World helpers ----------
@@ -55,10 +54,19 @@ class Grid:
         self.ghostCoords = ghostCoords
         return self.agentCoords, self.ghostCoords
 
+    def setSurrendered(self, surrendered: bool):
+        if surrendered and self.ghostCoords is not None:
+            self.ghostColor = (0,255,0)
+        else: 
+            self.ghostColor = (255, 255, 0)
+
+
     # ---------- Drawing ----------
 
     def init_display(self, cell_size: int = 20, caption: str = "Ghostbusters Grid") -> None:
         """Initialize pygame window & font; call once before drawing."""
+        import pygame  # Import only when actually needed for rendering
+        
         self.cell_size = cell_size
         pygame.init()
         self.surface = pygame.display.set_mode((self.width * cell_size, self.height * cell_size))
@@ -69,20 +77,26 @@ class Grid:
         self._font_small = pygame.font.SysFont("consolas", max(12, cell_size // 2))
 
     def close_display(self) -> None:
+        import pygame  # Import only when needed
+        
         if self.surface is not None:
             pygame.display.quit()
         pygame.quit()
         self.surface = None
         self._font_small = None
     
-    def _cell_rect(self, x: int, y: int) -> pygame.Rect:
+    def _cell_rect(self, x: int, y: int):
+        import pygame  # Import only when needed
+        
         s = self.cell_size
         return pygame.Rect(x * s, y * s, s, s)
 
     def draw_grid(self, show_grid_lines: bool = True) -> None:
         """Draw current grid state. Call after init_display()."""
+        import pygame  # Import only when needed for rendering
+        
         if self.surface is None:
-            raise RuntimeError("Call init_display() before draw_grid().")
+            self.init_display()
 
         surf = self.surface
         s = self.cell_size
@@ -143,6 +157,9 @@ class Grid:
                 pygame.draw.line(surf, linesColor, (x * s, 0), (x * s, H), 1)
             for y in range(self.height + 1):
                 pygame.draw.line(surf, linesColor, (0, y * s), (W, y * s), 1)
+
+        # Small delay to maintain ~60 FPS
+            pygame.time.Clock().tick(30)
 
         pygame.display.flip()
 

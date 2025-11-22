@@ -1,0 +1,61 @@
+name: ghostbusters_vdn
+
+# --- Agent / Controller ---
+agent: rnn                 # built-in registered agent
+mac: basic_mac             # multi-agent controller
+runner: episode
+
+# RNN agent
+use_rnn: True
+rnn_hidden_dim: 128
+
+# Action selection & outputs
+agent_output_type: q
+action_selector: epsilon_greedy
+
+# --- Mixer & Learner ---
+mixer: vdn                 # Will change to qmix after testing VDN with new rewards
+learner: q_learner         # learner class for (DQN-style) VDN/QMIX
+
+# --- Training ---
+gamma: 0.99
+double_q: True
+
+optimizer: adam
+lr: 0.0005                 # Reduced from 0.001 for more stable learning
+critic_lr: 0.0005
+
+batch_size: 32             # samples per learner update
+buffer_size: 50000         # Large buffer for diverse experiences
+batch_size_run: 1          # steps per env before insert
+
+t_max: 200000              # Extended training time (was 60k - too short!)
+
+# Epsilon-greedy exploration - EXTENDED FOR SPARSE REWARDS
+epsilon_start: 1.0
+epsilon_finish: 0.05       # Lower floor for continued exploration (was 0.1)
+epsilon_anneal_time: 150000  # Slow anneal over 150k steps (not 60k!)
+
+# Logging solid returns, no normalization for now
+standardise_returns: False
+standardise_rewards: False
+
+# --- Logging / Eval ---
+test_nepisode: 4
+test_interval: 10000        # test every 10k env steps
+log_interval: 2000
+save_model: True
+
+# Exploration during evaluation (tests)
+evaluation_epsilon: 0.1     # small randomization at test time
+
+# Misc flags some forks read (safe defaults)
+obs_agent_id: False
+obs_last_action: False
+state_last_action: False
+mask_before_softmax: False
+
+# Target network update settings
+target_update_interval: 200           # hard update every 200 steps
+target_update_interval_or_tau: 200    # duplicate for newer code paths
+tau: 0.005                            # only used if the code uses soft updates
