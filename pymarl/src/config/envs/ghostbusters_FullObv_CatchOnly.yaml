@@ -15,8 +15,8 @@ env_args:
 
   # Curriculum Stage 1 specific
   curriculum_stage: 1
-  ghost_move_prob : 0.3  
-  spawn_radius: 10         # Agents spawn within 10 cells of ghost
+  ghost_move_prob : 1  
+  spawn_radius: 15         # Agents spawn within 10 cells of ghost
 
   
   reward_kill: 100       
@@ -31,5 +31,5 @@ env_args:
   key: ghostbusters_stage1
 
   # rendering
-  render: False         # Disable for faster training
-  render_every: 10
+  render: False        
+  render_every: 1
