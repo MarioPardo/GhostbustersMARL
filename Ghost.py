@@ -21,17 +21,21 @@ class Ghost:
         Move randomly, avoiding agents within avoidRadius (Chebyshev distance).
         """
         
+        def min_dist_to_agents(p):
+            return min((cheb_dist(p, a) for a in agentCoords), default=float("inf"))
+
         movementProb = self.movementProb
         if movementProb <= 0:
             return self.x, self.y  #stay put
 
-        #Decrease movement probability based on how surrounded the ghost is
-        movementPenalty = min(1, 0.1 * self.GetSurroundedCount(agentCoords))
-        movementProb = movementProb * (1-movementPenalty)
-        movementProb = max(movementProb, 0.0)
         if random.random() > movementProb:
             return self.x, self.y  #stay put
 
+
+        #If the closest agent is far enough, stay put
+        min_dist = min_dist_to_agents((self.x, self.y))
+        if min_dist > self.avoidRadius:
+            return self.x, self.y  #stay put
 
         # 8 directions + stay
         moves = [(-1,-1), (0,-1), (1,-1),
@@ -49,16 +53,12 @@ class Ghost:
         candidateMoves = list({(nx, ny) for (nx, ny) in candidateMoves})
         random.shuffle(candidateMoves)
 
-        def min_dist_to_agents(p):
-            return min((cheb_dist(p, a) for a in agentCoords), default=float("inf"))
 
         # Sort by descending distance to the nearest agent (maximize separation)
         candidateMoves.sort(key=lambda p: min_dist_to_agents(p), reverse=True)
         occupied = set(agentCoords)
 
-        #If the closest agent is far enough, stay put
-        if min_dist_to_agents((self.x, self.y)) > self.avoidRadius:
-            return self.x, self.y  #stay put
+
         
         # Else, we avoid agents.
         for nx, ny in candidateMoves:  # Try moves best to worst

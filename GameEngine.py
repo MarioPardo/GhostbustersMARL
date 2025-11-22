@@ -238,6 +238,7 @@ class GameEngine:
         if(self.surroundCounter >= numAgents):
             self.grid.setSurrendered(True)
         else:
+            self.holdCounter = 0
             self.grid.setSurrendered(False)
 
         #Update Grid #rending purposes
@@ -263,7 +264,7 @@ class GameEngine:
             self.holdCounter = 0
 
         # End conditions
-        if self.holdCounter >= self.timeToKill:
+        if self.holdCounter >= self.timeToKill and self.isExtracting(self.ghostCoords):
             reward += self.win_reward 
             terminated = True
             success = True
@@ -273,17 +274,21 @@ class GameEngine:
 
         if terminated:
             return reward, terminated, success
+
+
+        #For shaping rewards per phase of game
+        surround_progress = self.surroundCounter / numAgents  # 0.0 → 1.0
         
+        extraction_multiplier = 0.1 + 1.9 * (surround_progress ** 3)
+        surrounding_multiplier = 1.0
 
-        # Reward for getting agents closer to ghost
-        reward += self.AgentToGhostDist_Reward(prev_d_ghost_agents)
+        #STEP1: Surrounding
+        reward += surrounding_multiplier * self.AgentToGhostDist_Reward(prev_d_ghost_agents)
+        reward += surrounding_multiplier * self.Surround_Reward(prev_surround_count)
+        reward += surrounding_multiplier * self.QuadrantCoverage_Reward()
 
-        #Reward for surrounding ghost
-        reward += self.Surround_Reward(prev_surround_count)
-        
-        # Reward for spreading around ghost at different angles
-        reward += self.QuadrantCoverage_Reward()    
-
+        #Step2: Extraction
+        reward += extraction_multiplier * self.GhostToExtraction_Reward(prev_d_ghost_extract)
 
         return reward, terminated, success
 
@@ -385,6 +390,29 @@ class GameEngine:
                 total_reward += self.lambda_quadrant_coverage * proximity_multiplier
         
         return total_reward
+
+    def GhostToExtraction_Reward(self, prev_d_ghost_extract):
+        reward = 0.0
+
+        max_dist = max(self.grid.width - 1, self.grid.height - 1)
+        dist = cheb_dist(self.grid.extraction_point_center, self.ghostCoords)
+        norm_dist = dist / max_dist
+        
+        reward += self.lambda_ghost_dist_to_extraction * ((1.0 - norm_dist) ** 3) * 5.0
+
+        # Ghost enters extraction zone
+        is_extracting = self.isExtracting(self.ghostCoords)
+        if is_extracting:
+            reward += 20.0  # Increased from 15 for clearer signal
+        
+        #Hold in extraction zone
+        if is_extracting and self.surroundCounter >= numAgents:
+            reward += 10.0 * (self.holdCounter / self.timeToKill)  # Scales 0→10 as hold progresses
+
+        return reward
+
+
+
 
     def calculateUsefulMetrics(self):
         
