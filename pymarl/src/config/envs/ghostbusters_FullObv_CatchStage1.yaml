@@ -1,0 +1,33 @@
+# CURRICULUM STAGE 1: Stationary Ghost, Close Spawn, Short Episodes
+# Goal: Learn basic pursuit and surround behavior
+# Success criteria: 50%+ win rate before moving to Stage 2
+
+env: ghostbusters
+
+env_args:
+  n_agents: 3
+  episode_limit: 300      # Short episodes - faster learning cycles
+  width: 30
+  height: 30
+  extraction_tl : [25, 25]
+  extraction_br : [29, 29]
+  seed: 0
+
+
+  ghost_move_prob : 0  
+  spawn_radius: 10        
+
+  reward_kill: 100       
+  reward_surrounded: 5   
+  reward_new_surround: 10 #
+  lambda_quadrant_coverage: 0.7
+  lambda_ghost_dist_to_extraction: 0.1
+  lambda_agent_dist_to_ghost: 1.0 
+
+  # --- SMAC-style keys ---
+  map_name: ghostbusters_stage1
+  key: ghostbusters_stage1
+
+  # rendering
+  render: False         
+  render_every: 1

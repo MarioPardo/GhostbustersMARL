@@ -1,5 +1,7 @@
 import os, sys
 import numpy as np
+import pygame
+
 
 # Ensure your project src/ is on the path so imports work
 SOURCE_ROOT = "/home/mariop/Documents/Programming/school/GhostbustersMARL"
@@ -102,21 +104,24 @@ class GhostbustersPyMARLEnv:
         #rendering - ONLY if explicitly enabled to avoid overhead
         if self.renderEnabled:
             if self._have_display and (self.engine.Time % self.render_every == 0):
-                # keep it non-blocking & cheap
                 self.engine.grid.draw_grid(show_grid_lines=True)
-                # let pygame process its event queue so the window stays responsive
-                import pygame
                 pygame.event.pump()
                 pygame.display.set_caption(f"t={self.engine.Time}  r={reward:.2f}")
 
         return obs, reward, terminated,truncated, info
     
     def render(self):
-        if self.renderEnabled and not self._have_display:
+        # Initialize display if not already done (handles evaluation mode)
+        if not self._have_display:
+            print("[GhostbustersEnv] Initializing pygame display for rendering...")
             self.engine.grid.init_display()
             self._have_display = True
+            print("[GhostbustersEnv] Display initialized successfully")
 
         self.engine.grid.draw_grid(show_grid_lines=True)
+        
+
+        pygame.event.pump()
 
 
     def close(self):

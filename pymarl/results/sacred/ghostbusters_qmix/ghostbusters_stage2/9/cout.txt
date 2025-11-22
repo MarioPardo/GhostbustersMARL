@@ -1,0 +1,252 @@
+[INFO 17:33:02] pymarl Running command 'my_main'
+[INFO 17:33:02] pymarl Started run with ID "9"
+[DEBUG 17:33:02] pymarl Starting Heartbeat
+[DEBUG 17:33:02] my_main Started
+[WARNING 17:33:02] my_main CUDA flag use_cuda was switched OFF automatically because no CUDA devices are available!
+[INFO 17:33:02] my_main Experiment Parameters:
+[INFO 17:33:02] my_main 
+
+{   'action_selector': 'epsilon_greedy',
+    'add_value_last_step': True,
+    'agent': 'rnn',
+    'agent_output_type': 'q',
+    'batch_size': 64,
+    'batch_size_run': 1,
+    'buffer_cpu_only': True,
+    'buffer_size': 50000,
+    'checkpoint_path': '',
+    'common_reward': True,
+    'critic_lr': 0.0003,
+    'double_q': True,
+    'env': 'ghostbusters',
+    'env_args': {   'episode_limit': 300,
+                    'extraction_br': [   29,
+                                         29],
+                    'extraction_tl': [   25,
+                                         25],
+                    'ghost_move_prob': 1,
+                    'height': 30,
+                    'key': 'ghostbusters_stage2',
+                    'lambda_agent_dist_to_ghost': 1.0,
+                    'lambda_ghost_dist_to_extraction': 0.1,
+                    'lambda_quadrant_coverage': 0.7,
+                    'map_name': 'ghostbusters_stage2',
+                    'n_agents': 3,
+                    'render': False,
+                    'render_every': 1,
+                    'reward_kill': 100,
+                    'reward_new_surround': 10,
+                    'reward_surrounded': 5,
+                    'seed': 954018877,
+                    'spawn_radius': 15,
+                    'width': 30},
+    'epsilon_anneal_time': 300000,
+    'epsilon_finish': 0.05,
+    'epsilon_start': 1.0,
+    'evaluate': False,
+    'evaluation_epsilon': 0.1,
+    'gamma': 0.99,
+    'grad_norm_clip': 5,
+    'hidden_dim': 64,
+    'hypergroup': None,
+    'hypernet_embed': 64,
+    'hypernet_layers': 2,
+    'label': 'default_label',
+    'learner': 'q_learner',
+    'learner_log_interval': 2000,
+    'load_step': 0,
+    'local_results_path': 'results',
+    'log_interval': 2000,
+    'lr': 0.0003,
+    'mac': 'basic_mac',
+    'mask_before_softmax': False,
+    'mixer': 'qmix',
+    'mixing_embed_dim': 32,
+    'name': 'ghostbusters_qmix',
+    'obs_agent_id': False,
+    'obs_last_action': False,
+    'optim_alpha': 0.99,
+    'optim_eps': 1e-05,
+    'optimizer': 'adam',
+    'render': False,
+    'repeat_id': 1,
+    'reward_scalarisation': 'sum',
+    'reward_standardisation_alpha': 0.01,
+    'rnn_hidden_dim': 128,
+    'runner': 'episode',
+    'runner_log_interval': 2000,
+    'save_model': True,
+    'save_model_interval': 50000,
+    'save_replay': False,
+    'seed': 954018877,
+    'standardise_returns': False,
+    'standardise_rewards': True,
+    'state_last_action': False,
+    't_max': 600000,
+    'target_update_interval': 200,
+    'target_update_interval_or_tau': 200,
+    'tau': 0.005,
+    'test_greedy': True,
+    'test_interval': 10000,
+    'test_nepisode': 5,
+    'use_cuda': False,
+    'use_rnn': True,
+    'use_tensorboard': False,
+    'use_wandb': False,
+    'wandb_mode': 'offline',
+    'wandb_project': None,
+    'wandb_save_model': False,
+    'wandb_team': None}
+
+[GhostbustersEnv] Unused env args ignored: ['ghost_move_prob', 'spawn_radius', 'reward_kill', 'reward_surrounded', 'reward_new_surround', 'lambda_quadrant_coverage', 'lambda_ghost_dist_to_extraction', 'lambda_agent_dist_to_ghost', 'render', 'render_every', 'reward_scalarisation']
+
+===== DEBUG ARGS =====
+action_selector: epsilon_greedy
+add_value_last_step: True
+agent: rnn
+agent_output_type: q
+batch_size: 64
+batch_size_run: 1
+buffer_cpu_only: True
+buffer_size: 50000
+checkpoint_path: 
+common_reward: True
+critic_lr: 0.0003
+device: cpu
+double_q: True
+env: ghostbusters
+env_args: {'n_agents': 3, 'episode_limit': 300, 'width': 30, 'height': 30, 'extraction_tl': [25, 25], 'extraction_br': [29, 29], 'seed': 954018877, 'ghost_move_prob': 1, 'spawn_radius': 15, 'reward_kill': 100, 'reward_surrounded': 5, 'reward_new_surround': 10, 'lambda_quadrant_coverage': 0.7, 'lambda_ghost_dist_to_extraction': 0.1, 'lambda_agent_dist_to_ghost': 1.0, 'map_name': 'ghostbusters_stage2', 'key': 'ghostbusters_stage2', 'render': False, 'render_every': 1}
+epsilon_anneal_time: 300000
+epsilon_finish: 0.05
+epsilon_start: 1.0
+evaluate: False
+evaluation_epsilon: 0.1
+gamma: 0.99
+grad_norm_clip: 5
+hidden_dim: 64
+hypergroup: None
+hypernet_embed: 64
+hypernet_layers: 2
+label: default_label
+learner: q_learner
+learner_log_interval: 2000
+load_step: 0
+local_results_path: results
+log_interval: 2000
+lr: 0.0003
+mac: basic_mac
+mask_before_softmax: False
+mixer: qmix
+mixing_embed_dim: 32
+n_actions: 9
+n_agents: 3
+name: ghostbusters_qmix
+obs_agent_id: False
+obs_last_action: False
+optim_alpha: 0.99
+optim_eps: 1e-05
+optimizer: adam
+render: False
+repeat_id: 1
+reward_scalarisation: sum
+reward_standardisation_alpha: 0.01
+rnn_hidden_dim: 128
+runner: episode
+runner_log_interval: 2000
+save_model: True
+save_model_interval: 50000
+save_replay: False
+seed: 954018877
+standardise_returns: False
+standardise_rewards: True
+state_last_action: False
+state_shape: 17
+t_max: 600000
+target_update_interval: 200
+target_update_interval_or_tau: 200
+tau: 0.005
+test_greedy: True
+test_interval: 10000
+test_nepisode: 5
+unique_token: ghostbusters_qmix_seed954018877_ghostbusters_stage2_2025-11-22 17:33:02.494056
+use_cuda: False
+use_rnn: True
+use_tensorboard: False
+use_wandb: False
+wandb_mode: offline
+wandb_project: None
+wandb_save_model: False
+wandb_team: None
+======================
+
+[INFO 17:33:03] my_main Beginning training for 600000 timesteps
+/Users/mario/Documents/Programming/GhostbustersMARL/pymarl/src/components/episode_buffer.py:93: UserWarning: Using a non-tuple sequence for multidimensional indexing is deprecated and will be changed in pytorch 2.9; use x[tuple(seq)] instead of x[seq]. In pytorch 2.9 this will be interpreted as tensor index, x[torch.tensor(seq)], which will result either in an error or a different result (Triggered internally at /Users/runner/work/pytorch/pytorch/pytorch/torch/csrc/autograd/python_variable_indexing.cpp:312.)
+  target["filled"][slices] = 1
+/Users/mario/Documents/Programming/GhostbustersMARL/pymarl/src/components/episode_buffer.py:105: UserWarning: Using a non-tuple sequence for multidimensional indexing is deprecated and will be changed in pytorch 2.9; use x[tuple(seq)] instead of x[seq]. In pytorch 2.9 this will be interpreted as tensor index, x[torch.tensor(seq)], which will result either in an error or a different result (Triggered internally at /Users/runner/work/pytorch/pytorch/pytorch/torch/csrc/autograd/python_variable_indexing.cpp:312.)
+  self._check_safe_view(v, target[k][_slices])
+/Users/mario/Documents/Programming/GhostbustersMARL/pymarl/src/components/episode_buffer.py:106: UserWarning: Using a non-tuple sequence for multidimensional indexing is deprecated and will be changed in pytorch 2.9; use x[tuple(seq)] instead of x[seq]. In pytorch 2.9 this will be interpreted as tensor index, x[torch.tensor(seq)], which will result either in an error or a different result (Triggered internally at /Users/runner/work/pytorch/pytorch/pytorch/torch/csrc/autograd/python_variable_indexing.cpp:312.)
+  target[k][_slices] = v.view_as(target[k][_slices])
+/Users/mario/Documents/Programming/GhostbustersMARL/pymarl/src/components/episode_buffer.py:110: UserWarning: Using a non-tuple sequence for multidimensional indexing is deprecated and will be changed in pytorch 2.9; use x[tuple(seq)] instead of x[seq]. In pytorch 2.9 this will be interpreted as tensor index, x[torch.tensor(seq)], which will result either in an error or a different result (Triggered internally at /Users/runner/work/pytorch/pytorch/pytorch/torch/csrc/autograd/python_variable_indexing.cpp:312.)
+  v = target[k][_slices]
+/Users/mario/Documents/Programming/GhostbustersMARL/pymarl/src/components/episode_buffer.py:113: UserWarning: Using a non-tuple sequence for multidimensional indexing is deprecated and will be changed in pytorch 2.9; use x[tuple(seq)] instead of x[seq]. In pytorch 2.9 this will be interpreted as tensor index, x[torch.tensor(seq)], which will result either in an error or a different result (Triggered internally at /Users/runner/work/pytorch/pytorch/pytorch/torch/csrc/autograd/python_variable_indexing.cpp:312.)
+  target[new_k][_slices] = v.view_as(target[new_k][_slices])
+[INFO 17:33:03] my_main t_env: 300 / 600000
+[INFO 17:33:03] my_main Estimated time left: 4 seconds. Time passed: 0 seconds
+[INFO 17:33:04] my_main Saving models to results/models/ghostbusters_qmix_seed954018877_ghostbusters_stage2_2025-11-22 17:33:02.494056/300
+[INFO 17:33:04] my_main Recent Stats | t_env:       2100 | Episode:        7
+ep_length_mean:          300.0000	epsilon:                   1.0000	hold_mean:                 0.0000	return_mean:             1028.0742
+return_std:                0.0000	success_mean:              0.0000	t_mean:                  300.0000	test_ep_length_mean:     300.0000
+test_hold_mean:            0.0000	test_return_mean:        1461.5102	test_return_std:         329.2987	test_success_mean:         0.0000
+test_t_mean:             300.0000	
+[INFO 17:33:05] my_main Recent Stats | t_env:       4200 | Episode:       14
+ep_length_mean:          300.0000	epsilon:                   0.9933	hold_mean:                 0.0000	return_mean:             1127.5753
+return_std:              142.8534	success_mean:              0.0000	t_mean:                  300.0000	test_ep_length_mean:     300.0000
+test_hold_mean:            0.0000	test_return_mean:        1461.5102	test_return_std:         329.2987	test_success_mean:         0.0000
+test_t_mean:             300.0000	
+[INFO 17:33:05] my_main Recent Stats | t_env:       6300 | Episode:       21
+ep_length_mean:          300.0000	epsilon:                   0.9867	hold_mean:                 0.0000	return_mean:             1121.0664
+return_std:              171.8204	success_mean:              0.0000	t_mean:                  300.0000	test_ep_length_mean:     300.0000
+test_hold_mean:            0.0000	test_return_mean:        1461.5102	test_return_std:         329.2987	test_success_mean:         0.0000
+test_t_mean:             300.0000	
+[INFO 17:33:06] my_main Recent Stats | t_env:       8400 | Episode:       28
+ep_length_mean:          300.0000	epsilon:                   0.9800	hold_mean:                 0.0000	return_mean:             1162.8561
+return_std:              216.5606	success_mean:              0.0000	t_mean:                  300.0000	test_ep_length_mean:     300.0000
+test_hold_mean:            0.0000	test_return_mean:        1461.5102	test_return_std:         329.2987	test_success_mean:         0.0000
+test_t_mean:             300.0000	
+[INFO 17:33:06] my_main t_env: 10500 / 600000
+[INFO 17:33:06] my_main Estimated time left: 2 minutes, 42 seconds. Time passed: 2 seconds
+[INFO 17:33:07] my_main Recent Stats | t_env:      10500 | Episode:       35
+ep_length_mean:          300.0000	epsilon:                   0.9734	hold_mean:                 0.0000	return_mean:             1209.4816
+return_std:              217.9931	success_mean:              0.0000	t_mean:                  300.0000	test_ep_length_mean:     300.0000
+test_hold_mean:            0.0000	test_return_mean:        1362.0152	test_return_std:         342.6413	test_success_mean:         0.0000
+test_t_mean:             300.0000	
+[INFO 17:33:07] my_main Recent Stats | t_env:      12600 | Episode:       42
+ep_length_mean:          300.0000	epsilon:                   0.9667	hold_mean:                 0.0000	return_mean:             1252.1509
+return_std:              303.8406	success_mean:              0.0000	t_mean:                  300.0000	test_ep_length_mean:     300.0000
+test_hold_mean:            0.0000	test_return_mean:        1362.0152	test_return_std:         342.6413	test_success_mean:         0.0000
+test_t_mean:             300.0000	
+[INFO 17:33:08] my_main Recent Stats | t_env:      14700 | Episode:       49
+ep_length_mean:          300.0000	epsilon:                   0.9601	hold_mean:                 0.0000	return_mean:             1265.8205
+return_std:              311.9099	success_mean:              0.0000	t_mean:                  300.0000	test_ep_length_mean:     300.0000
+test_hold_mean:            0.0000	test_return_mean:        1362.0152	test_return_std:         342.6413	test_success_mean:         0.0000
+test_t_mean:             300.0000	
+[INFO 17:33:08] my_main Recent Stats | t_env:      16800 | Episode:       56
+ep_length_mean:          300.0000	epsilon:                   0.9535	hold_mean:                 0.0000	return_mean:             1382.8744
+return_std:              339.1676	success_mean:              0.0000	t_mean:                  300.0000	test_ep_length_mean:     300.0000
+test_hold_mean:            0.0000	test_return_mean:        1362.0152	test_return_std:         342.6413	test_success_mean:         0.0000
+test_t_mean:             300.0000	
+[INFO 17:33:09] my_main Recent Stats | t_env:      18900 | Episode:       63
+ep_length_mean:          300.0000	epsilon:                   0.9468	hold_mean:                 0.0000	return_mean:             1350.7208
+return_std:              322.2650	success_mean:              0.0000	t_mean:                  300.0000	test_ep_length_mean:     300.0000
+test_hold_mean:            0.0000	test_return_mean:        1362.0152	test_return_std:         342.6413	test_success_mean:         0.0000
+test_t_mean:             300.0000	
+/Users/mario/Documents/Programming/GhostbustersMARL/pymarl/src/components/episode_buffer.py:152: UserWarning: Using a non-tuple sequence for multidimensional indexing is deprecated and will be changed in pytorch 2.9; use x[tuple(seq)] instead of x[seq]. In pytorch 2.9 this will be interpreted as tensor index, x[torch.tensor(seq)], which will result either in an error or a different result (Triggered internally at /Users/runner/work/pytorch/pytorch/pytorch/torch/csrc/autograd/python_variable_indexing.cpp:312.)
+  new_data.transition_data[k] = v[item]
+[INFO 17:33:10] my_main t_env: 20700 / 600000
+[INFO 17:33:10] my_main Estimated time left: 3 minutes, 49 seconds. Time passed: 6 seconds
+[INFO 17:33:11] my_main Recent Stats | t_env:      21000 | Episode:       70
+ep_length_mean:          300.0000	epsilon:                   0.9402	grad_norm:                 5.8821	hold_mean:                 0.0000
+loss:                      1.2039	q_taken_mean:              0.2816	return_mean:             1307.6091	return_std:              331.3983
+success_mean:              0.0000	t_mean:                  300.0000	target_mean:               0.4234	td_error_abs:              0.6932
+test_ep_length_mean:     300.0000	test_hold_mean:            0.0000	test_return_mean:        1285.6618	test_return_std:         351.8560
+test_success_mean:         0.0000	test_t_mean:             300.0000	
