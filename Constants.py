@@ -18,7 +18,5 @@ N_ACTIONS = len(ACTION_TO_DELTA)
 
 ### FUNCTIONS ###
 def cheb_dist(p, q):
+    """Chebyshev distance (max of absolute differences) - matches surround radius logic"""
     return max(abs(p[0] - q[0]), abs(p[1] - q[1]))
-
-def cheb_dist(p, q):
-    return abs(p[0] - q[0]) + abs(p[1] - q[1])

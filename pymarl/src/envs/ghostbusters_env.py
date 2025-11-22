@@ -2,7 +2,7 @@ import os, sys
 import numpy as np
 
 # Ensure your project src/ is on the path so imports work
-SOURCE_ROOT = "/Users/mario/Documents/Programming/GhostbustersMARL"
+SOURCE_ROOT = "/home/mariop/Documents/Programming/school/GhostbustersMARL"
 if SOURCE_ROOT not in sys.path:
     sys.path.insert(0, SOURCE_ROOT)
 
@@ -38,6 +38,7 @@ class GhostbustersPyMARLEnv:
         self.reward_surrounded = kwargs.get("reward_surrounded", 5)
         self.lambda_quadrant_coverage = kwargs.get("lambda_quadrant_coverage", 0.7)
         self.reward_new_surround = kwargs.get("reward_new_surround", 5)
+        self.reward_is_extracting = kwargs.get("reward_is_extracting", 20)
 
         rewardcfg = {
             "reward_kill": self.reward_kill,
@@ -46,7 +47,7 @@ class GhostbustersPyMARLEnv:
             "reward_surrounded": self.reward_surrounded,
             "lambda_quadrant_coverage": self.lambda_quadrant_coverage,
             "reward_new_surround": self.reward_new_surround,
-
+            "reward_is_extracting": self.reward_is_extracting
         }
 
         #rendering
@@ -98,15 +99,15 @@ class GhostbustersPyMARLEnv:
         truncated = self.engine.Time >= self.episode_limit
         obs = self.get_obs()
 
-        #rendering
-        if self.renderEnabled and self._have_display and (self.engine.Time % self.render_every == 0):
-       
-       # keep it non-blocking & cheap
-            self.engine.grid.draw_grid(show_grid_lines=True)
-            # let pygame process its event queue so the window stays responsive
-            import pygame
-            pygame.event.pump()
-            pygame.display.set_caption(f"t={self.engine.Time}  r={reward:.2f}")
+        #rendering - ONLY if explicitly enabled to avoid overhead
+        if self.renderEnabled:
+            if self._have_display and (self.engine.Time % self.render_every == 0):
+                # keep it non-blocking & cheap
+                self.engine.grid.draw_grid(show_grid_lines=True)
+                # let pygame process its event queue so the window stays responsive
+                import pygame
+                pygame.event.pump()
+                pygame.display.set_caption(f"t={self.engine.Time}  r={reward:.2f}")
 
         return obs, reward, terminated,truncated, info
     

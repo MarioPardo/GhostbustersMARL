@@ -1,6 +1,11 @@
 import os
 import sys
 
+# Add root folder to path (3 levels up from this file)
+root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..'))
+if root_path not in sys.path:
+    sys.path.insert(0, root_path)
+
 from .ghostbusters_env import GhostbustersPyMARLEnv
 
 

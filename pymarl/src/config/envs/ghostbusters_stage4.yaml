@@ -15,19 +15,18 @@ env_args:
 
   # Full difficulty
   curriculum_stage: 3
-  ghost_stationary: false
   ghost_move_prob: 1.0     # Ghost uses full evasion logic
   spawn_radius: 30         # Random spawn anywhere
 
  #reward
   reward_kill: 100          
-  reward_new_surround: 5
-  penalty_formation_break: 3.0        # Penalty per agent leaving surround
-  reward_full_surround: 15.0   # Bonus for achieving full surround
-  lambda_quadrant_coverage: 2
-  lambda_ghost_dist_to_extraction: 1.0
-  lambda_agent_dist_to_ghost: 3.0 
-  reward_is_extracting: 15   # Reward for getting ghost to extraction area
+  reward_new_surround: 3            # REDUCED from 5 - surrounding is too rewarding
+  penalty_formation_break: 2.0      # REDUCED from 3.0 - less harsh
+  reward_full_surround: 3.0        
+  lambda_quadrant_coverage: 1.5     
+  lambda_ghost_dist_to_extraction: 2.0  
+  lambda_agent_dist_to_ghost: 2.0   
+  reward_is_extracting: 20   
 
   transition_sigmoid_midpoint: 0.67
   transition_sigmoid_steepness: 10.0
@@ -36,4 +35,4 @@ env_args:
   key: ghostbusters_stage4
 
   render: False
-  render_every: 50
+  render_every: 1

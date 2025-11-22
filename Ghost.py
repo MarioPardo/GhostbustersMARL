@@ -13,7 +13,8 @@ class Ghost:
         self.y = y
         self.movementProb = movementProb  # Probability of moving each turn
 
-        self.avoidRadius = 3 
+   
+        self.avoidRadius = 2  
 
 
     def move(self, agentCoords):
