@@ -38,9 +38,9 @@ batch_size_run: 1          # steps per env before insert
 t_max: 600000              # Extended training for better convergence
 
 # Epsilon-greedy exploration - EXTENDED FOR SPARSE REWARDS
-epsilon_start: 1.0
+epsilon_start: 1
 epsilon_finish: 0.05       # Lower floor for continued exploration (was 0.1)
-epsilon_anneal_time: 300000  # Even slower anneal for QMIX
+epsilon_anneal_time: 400000  # Even slower anneal for QMIX
 
 # Logging with reward normalization for stability
 standardise_returns: False

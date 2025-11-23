@@ -1,4 +1,5 @@
 from typing import Iterable, Optional, Tuple, List
+import pygame  # Import only when needed for rendering
 
 import Agent
 
@@ -92,8 +93,6 @@ class Grid:
         return pygame.Rect(x * s, y * s, s, s)
 
     def draw_grid(self, show_grid_lines: bool = True) -> None:
-        """Draw current grid state. Call after init_display()."""
-        import pygame  # Import only when needed for rendering
         
         if self.surface is None:
             self.init_display()

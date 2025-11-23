@@ -1,0 +1,31 @@
+env: ghostbusters
+
+env_args:
+  n_agents: 3
+  episode_limit: 400      
+  width: 30
+  height: 30
+  extraction_tl : [25, 25]
+  extraction_br : [29, 29]
+  seed: 0
+
+  vision_radius: 8
+  spawn_radius: 12
+  ghost_move_prob: 0.5
+
+  reward_kill: 200       
+  reward_surrounded: 5   
+  reward_new_surround: 8
+  reward_ghost_spotted: 20
+  reward_ghost_visible: 0.5
+  lambda_agent_spread: 1.0
+  lambda_grid_coverage: 0.5
+  lambda_quadrant_coverage: 0.2
+  lambda_ghost_dist_to_extraction: 0.1
+  lambda_agent_dist_to_ghost: 2
+
+  map_name: ghostbusters_partobv_vision15
+  key: ghostbusters_partobv_vision15
+
+  render: False
+  render_every: 1

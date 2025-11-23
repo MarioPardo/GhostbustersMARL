@@ -2,7 +2,7 @@ import json
 import matplotlib.pyplot as plt
 import os
 
-METRICS_PATH_P1 = "pymarl/results/sacred/ghostbusters_qmix/ghostbusters_stage3/"
+METRICS_PATH_P1 = "pymarl/results/sacred/ghostbusters_qmix/ghostbusters_partobv_stage2/"
 METRICS_PATH_P2 = "/metrics.json"
 OUTPUT_FIG = "metrics_summary.png"
 
@@ -58,11 +58,14 @@ def main():
     # 3) Q-values vs env steps
     steps_loss, vals_loss = extract_xy(data, "loss")
 
-    # Sucess Metric
+    #4) Sucess Metric
     steps_succ, vals_succ = extract_xy(data, "test_success_mean")  # or "test_success_mean"
 
+    #5 Time first seen ghost
+    steps_time, vals_time = extract_xy(data, "test_time_first_seen_mean")
+
     # --- Create a single figure with 4 subplots ---
-    fig, axes = plt.subplots(2, 2, figsize=(10, 12), sharex=True)
+    fig, axes = plt.subplots(2, 3, figsize=(10, 12), sharex=True)
     fig.suptitle("Ghostbusters MARL Training Metrics", fontsize=16)
 
     # Subplot 1: Episode length
@@ -106,6 +109,15 @@ def main():
         ax.set_xlabel("env steps (t_env)")
         ax.set_ylabel("success_mean")
         ax.set_title("Success rate Test")
+        ax.grid(True)
+
+    #Subplot 5: Time first seen ghost
+    ax = axes[0][2]
+    if steps_time is not None:
+        ax.plot(steps_time, vals_time)
+        ax.set_xlabel("env steps (t_env)")
+        ax.set_ylabel("time_first_seen_mean")
+        ax.set_title("Time first seen ghost Test")
         ax.grid(True)
     
     else:

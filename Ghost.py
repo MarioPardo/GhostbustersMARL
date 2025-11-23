@@ -59,7 +59,6 @@ class Ghost:
         candidateMoves.sort(key=lambda p: min_dist_to_agents(p), reverse=True)
         occupied = set(agentCoords)
 
-
         
         # Else, we avoid agents.
         for nx, ny in candidateMoves:  # Try moves best to worst

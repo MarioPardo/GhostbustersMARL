@@ -76,6 +76,7 @@ class EpisodeRunner:
         self.mac.init_hidden(batch_size=self.batch_size)
 
         episode_success = 0
+        episode_time_first_seen = 0
 
         while not terminated:
             pre_transition_data = {
@@ -105,6 +106,7 @@ class EpisodeRunner:
 
             #Update to see if this episode was a success
             episode_success = max(episode_success, float(env_info.get("success", 0.0)))
+            episode_time_first_seen = max(episode_time_first_seen, float(env_info.get("time_first_seen", 0.0)))
 
             if self.args.common_reward:
                 post_transition_data["reward"] = [(reward,)]
@@ -141,6 +143,9 @@ class EpisodeRunner:
         cur_stats = self.test_stats if test_mode else self.train_stats
         cur_returns = self.test_returns if test_mode else self.train_returns
         log_prefix = "test_" if test_mode else ""
+        
+        # Add episode-level metrics to env_info
+        env_info["time_first_seen"] = episode_time_first_seen
         
         cur_stats.update(
             {

@@ -28,8 +28,14 @@ class GhostbustersPyMARLEnv:
         e_tl_x, e_tl_y = extraction_tl
         e_br_x, e_br_y = extraction_br
 
-        self._obs_dim = 11                # [ax,ay,gx,gy,etlx,etly,ebrx,ebry,dist,surround_progress,hold_progress]
-        self._state_dim = 2 * n_agents + 3 + 4 + 1 + 3   # all agents (2*n) + ghost (3) + extraction (4) + time (1) + progress (3)
+        self.spawn_radius = kwargs.get("spawn_radius", None)
+        self.ghost_move_prob = kwargs.get("ghost_move_prob", 1.0)
+        self.vision_radius = kwargs.get("vision_radius", None)
+        
+        self._obs_dim = 2 + 3 + (n_agents - 1) * 3 + 4 + 1
+        self._state_dim = 2 * n_agents + 3 + 4 + 1 + 3
+        
+        self.last_reward = 0.0   # all agents (2*n) + ghost (3) + extraction (4) + time (1) + progress (3)
 
         # Environment parameters from kwargs
 
@@ -41,6 +47,10 @@ class GhostbustersPyMARLEnv:
         self.lambda_quadrant_coverage = kwargs.get("lambda_quadrant_coverage", 0.7)
         self.reward_new_surround = kwargs.get("reward_new_surround", 5)
         self.reward_is_extracting = kwargs.get("reward_is_extracting", 20)
+        self.reward_ghost_spotted = kwargs.get("reward_ghost_spotted", 10)
+        self.reward_ghost_visible = kwargs.get("reward_ghost_visible", 0.5)
+        self.lambda_agent_spread = kwargs.get("lambda_agent_spread", 0.0)
+        self.lambda_grid_coverage = kwargs.get("lambda_grid_coverage", 0.0)
 
         rewardcfg = {
             "reward_kill": self.reward_kill,
@@ -49,19 +59,23 @@ class GhostbustersPyMARLEnv:
             "reward_surrounded": self.reward_surrounded,
             "lambda_quadrant_coverage": self.lambda_quadrant_coverage,
             "reward_new_surround": self.reward_new_surround,
-            "reward_is_extracting": self.reward_is_extracting
+            "reward_is_extracting": self.reward_is_extracting,
+            "reward_ghost_spotted": self.reward_ghost_spotted,
+            "reward_ghost_visible": self.reward_ghost_visible,
+            "lambda_agent_spread": self.lambda_agent_spread,
+            "lambda_grid_coverage": self.lambda_grid_coverage,
+
         }
 
         #rendering
+        
         self.renderEnabled = kwargs.get("render", False)              
         self.render_every = int(kwargs.get("render_every", 100))
         self._have_display = False
     
-        # Curriculum learning
-        self.spawn_radius = kwargs.get("spawn_radius", None)  # None = normal difficulty
-        self.ghost_move_prob = kwargs.get("ghost_move_prob", 1.0)  # Probability of ghost moving each turn
-        
-        #default stuff
+        self.spawn_radius = kwargs.get("spawn_radius", None)
+        self.ghost_move_prob = kwargs.get("ghost_move_prob", 1.0)
+        self.vision_radius = kwargs.get("vision_radius", None)        #default stuff
         self.map_name = kwargs.pop("map_name", "ghostbusters")
         self.key = kwargs.pop("key", None)
         self.common_reward = kwargs.pop("common_reward", None)
@@ -78,7 +92,8 @@ class GhostbustersPyMARLEnv:
             episodeLimit=episode_limit,
             reward_cfg=rewardcfg,
             spawn_radius=self.spawn_radius,  
-            ghost_move_prob=self.ghost_move_prob
+            ghost_move_prob=self.ghost_move_prob,
+            vision_radius=self.vision_radius
         )
 
     # -------- required API --------
@@ -87,7 +102,7 @@ class GhostbustersPyMARLEnv:
 
         #rendering
         if self.renderEnabled and not self._have_display:
-            self.engine.grid.init_display(cell_size=18, caption="Ghostbusters – training view")
+            self.engine.grid.init_display(cell_size=20, caption="Ghostbusters – training view")
             self._have_display = True
         if self.renderEnabled and self._have_display:
             self.engine.grid.draw_grid(show_grid_lines=True)
@@ -97,31 +112,28 @@ class GhostbustersPyMARLEnv:
 
     def step(self, actions):
         reward, terminated, info = self.engine.step(actions)
-        # Decide if we hit episode limit
         truncated = self.engine.Time >= self.episode_limit
         obs = self.get_obs()
+        
+        self.last_reward = reward
 
-        #rendering - ONLY if explicitly enabled to avoid overhead
         if self.renderEnabled:
             if self._have_display and (self.engine.Time % self.render_every == 0):
-                self.engine.grid.draw_grid(show_grid_lines=True)
-                pygame.event.pump()
-                pygame.display.set_caption(f"t={self.engine.Time}  r={reward:.2f}")
+                self.render()
 
         return obs, reward, terminated,truncated, info
     
     def render(self):
-        # Initialize display if not already done (handles evaluation mode)
         if not self._have_display:
             print("[GhostbustersEnv] Initializing pygame display for rendering...")
-            self.engine.grid.init_display()
+            self.engine.grid.init_display(cell_size=18, caption="Ghostbusters")
             self._have_display = True
             print("[GhostbustersEnv] Display initialized successfully")
 
         self.engine.grid.draw_grid(show_grid_lines=True)
-        
 
         pygame.event.pump()
+        pygame.display.set_caption(f"t={self.engine.Time}  r={self.last_reward:.2f}  vis={int(self.engine.ghost_visible)}")
 
 
     def close(self):
@@ -152,9 +164,11 @@ class GhostbustersPyMARLEnv:
         for a in self.engine.agents:
             s += [a.x/(W-1), a.y/(H-1)]
 
-        #Ghost + visible flag (full obs baseline → 1.0)
-        gx, gy = self.engine.ghostCoords
-        s += [gx/(W-1), gy/(H-1), 1.0]
+        if self.engine.ghost_visible:
+            gx, gy = self.engine.ghostCoords
+            s += [gx/(W-1), gy/(H-1), 1.0]
+        else:
+            s += [0.0, 0.0, 0.0]
 
         #Extraction area
         etlx, etly = self.engine.grid.extraction_area_tl
@@ -166,11 +180,16 @@ class GhostbustersPyMARLEnv:
 
         #Global task progress (for value estimation)
         s += [
-            self.engine.surroundCounter / self.n_agents,  # surround progress [0-1]
-            self.engine.holdCounter / self.engine.timeToKill,  # capture progress [0-1]
-            # Average distance to ghost (normalized)
-            sum(cheb_dist((a.x, a.y), self.engine.ghostCoords) for a in self.engine.agents) / (self.n_agents * max(W-1, H-1))
+            self.engine.surroundCounter / self.n_agents,
+            self.engine.holdCounter / self.engine.timeToKill,
         ]
+        
+        #Only include avg distance to ghost if visible
+        if self.engine.ghost_visible:
+            avg_dist = sum(cheb_dist((a.x, a.y), self.engine.ghostCoords) for a in self.engine.agents) / (self.n_agents * max(W-1, H-1))
+            s += [avg_dist]
+        else:
+            s += [0.0]
 
         return np.asarray(s, dtype=np.float32)
 

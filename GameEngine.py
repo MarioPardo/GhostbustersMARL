@@ -16,13 +16,16 @@ presetGhostCoords = (15,25)
 
 class GameEngine:
 
-    def __init__(self, extractionTL_x: int, extractionTL_y: int, extractionBR_x:int, extractionBR_y, episodeLimit: int, reward_cfg, spawn_radius: int, ghost_move_prob: float):
+    def __init__(self, extractionTL_x: int, extractionTL_y: int, extractionBR_x:int, extractionBR_y, episodeLimit: int, reward_cfg, spawn_radius: int, ghost_move_prob: float, vision_radius: int = None):
         
-        self.grid = Grid(extractionTL_x, extractionTL_y, extractionBR_x, extractionBR_y)
-        
-        self.spawn_radius = spawn_radius  # For curriculum learning
+        self.spawn_radius = spawn_radius
+        self.vision_radius = vision_radius if vision_radius is not None else 15
+        self.grid = Grid(extractionTL_x, extractionTL_y, extractionBR_x, extractionBR_y, visibilityRadius=self.vision_radius)
         self.agentCoords, self.ghostCoords = self.SpawnEntities(randomized=True, spawn_radius=spawn_radius)
-        self.grid.setEntities(self.agentCoords, self.ghostCoords) 
+        self.grid.setEntities(self.agentCoords, self.ghostCoords)
+        
+        self.ghost_visible = False
+        self.ghost_last_seen_pos = None 
 
         #Create Agents, Ghost
         self.agents = []
@@ -46,13 +49,22 @@ class GameEngine:
         self.reward_full_surround = reward_cfg.get("reward_full_surround", 30.0)
         self.win_reward = reward_cfg.get("reward_kill", 1000)
         self.reward_is_extracting = reward_cfg.get("reward_is_extracting", 20)
+        self.reward_ghost_spotted = reward_cfg.get("reward_ghost_spotted", 10)
+        self.reward_ghost_visible = reward_cfg.get("reward_ghost_visible", 0.5)
+        self.lambda_agent_spread = reward_cfg.get("lambda_agent_spread", 0.0)
+        self.lambda_grid_coverage = reward_cfg.get("lambda_grid_coverage", 0.0)
 
         self.timeToKill = TIME_TO_KILL
         self.surroundRadius = SURROUND_RADIUS
+        
+        # Initialize visit map for exploration tracking
+        self.visit_map = {}
 
         self.Time = 0
-        self.holdCounter = 0 # how long agents have been surrounding ghost
+        self.holdCounter = 0
         self.surroundCounter = 0
+        self.prev_ghost_visible = False
+        self.time_first_seen = None
 
     def reset(self, randomized = True):
         """
@@ -72,11 +84,17 @@ class GameEngine:
 
         self.holdCounter = 0
         self.Time = 0
+        self.ghost_visible = False
+        self.prev_ghost_visible = False
+        self.time_first_seen = None
+        self.reward_ghost_spotted = self.reward_cfg.get("reward_ghost_spotted", 10)
+        self.visit_map = {}  # Reset exploration tracking
+        self.updateGhostVisibility()
 
-        return self.full_obs_helper() #for debugging
+        return self.full_obs_helper()
 
 
-    def SpawnEntities(self, randomized: bool, spawn_radius: int = None):
+    def SpawnEntities(self, randomized: bool, spawn_radius: int):
         """
         Spawn agents and ghost at random non-overlapping locations.
         
@@ -88,61 +106,41 @@ class GameEngine:
         if not randomized:
             return presetAgentCoords, presetGhostCoords
 
-        else:
-            # First spawn agents 
-            agentSpawnpoints = []
-            for i in range(numAgents):
-                while True:
-                    ax = np.random.randint(0, self.grid.width)
-                    ay = np.random.randint(0, self.grid.height)
-                    
-                    if (ax, ay) not in agentSpawnpoints:
-                        agentSpawnpoints.append((ax, ay))
-                        break
-            
-            # Then spawn ghost based on spawn_radius
-            if spawn_radius is not None:
-                # CURRICULUM: Ghost within spawn_radius of at least one agent
-                attempts = 0
-                while attempts < 100:
-                    # Pick a random agent to spawn near
-                    target_agent = agentSpawnpoints[np.random.randint(0, numAgents)]
-                    
-                    # Random offset within spawn_radius
-                    dx = np.random.randint(-spawn_radius, spawn_radius + 1)
-                    dy = np.random.randint(-spawn_radius, spawn_radius + 1)
-                    gx = np.clip(target_agent[0] + dx, 0, self.grid.width - 1)
-                    gy = np.clip(target_agent[1] + dy, 0, self.grid.height - 1)
-                    
-                    if (gx, gy) not in agentSpawnpoints and not self.isExtracting((gx, gy)):
-                        ghostSpawnpoint = (gx, gy)
-                        break
-                    attempts += 1
+        
+        # First spawn agents 
+        agentSpawnpoints = []
+        for i in range(numAgents):
+            while True:
+                ax = np.random.randint(0, self.grid.width)
+                ay = np.random.randint(0, self.grid.height)
                 
-                if attempts >= 100:  # Fallback
-                    while True:
-                        gx = np.random.randint(0, self.grid.width)
-                        gy = np.random.randint(0, self.grid.height)
-                        if (gx, gy) not in agentSpawnpoints and not self.isExtracting((gx, gy)):
-                            ghostSpawnpoint = (gx, gy)
-                            break
-            else:
-                # NORMAL: Ghost at least VISIBILITY_RADIUS away from every agent
-                while True:
-                    gx = np.random.randint(0, self.grid.width)
-                    gy = np.random.randint(0, self.grid.height)
-                    
-                    if (gx, gy) not in agentSpawnpoints and not self.isExtracting((gx, gy)):
-                        # Check distance from all agents
-                        all_far_enough = all(
-                            cheb_dist((gx, gy), agent_pos) > VISIBILITY_RADIUS 
-                            for agent_pos in agentSpawnpoints
-                        )
-                        if all_far_enough:
-                            ghostSpawnpoint = (gx, gy)
-                            break
+                if (ax, ay) not in agentSpawnpoints:
+                    agentSpawnpoints.append((ax, ay))
+                    break
+        
+        #Ghost spawns atleast some distance away from everyone
+        attempts = 0
+        spawn_radius = self.spawn_radius
+        while True:
+            attempts += 1
+            gx = np.random.randint(0, self.grid.width)
+            gy = np.random.randint(0, self.grid.height)
+            
+            if (gx, gy) not in agentSpawnpoints and not self.isExtracting((gx, gy)):
+                # Check distance from all agents
+                all_far_enough = all(
+                    cheb_dist((gx, gy), agent_pos) > spawn_radius
+                    for agent_pos in agentSpawnpoints
+                )
+                if all_far_enough:
+                    ghostSpawnpoint = (gx, gy)
+                    break
 
-            return agentSpawnpoints, ghostSpawnpoint
+                if attempts > 100:
+                    ghostSpawnpoint = (gx, gy)
+                    break   
+
+        return agentSpawnpoints, ghostSpawnpoint
 
 
     def simpleStep(self):
@@ -219,8 +217,7 @@ class GameEngine:
         prev_d_ghost_extract = cheb_dist(self.grid.extraction_point_center, self.ghostCoords)
         prev_d_ghost_agents = [cheb_dist((a.x, a.y), (self.ghost.x, self.ghost.y)) for a in self.agents]
         prev_surround_count = self.ghost.GetSurroundedCount(self.agentCoords)
-
-        ###
+        
 
         #Move Ghost FIRST 
         self.ghostCoords = self.ghost.move(self.agentCoords)
@@ -230,25 +227,33 @@ class GameEngine:
             a.apply_action(act_id)
         self.agentCoords = [(a.x, a.y) for a in self.agents]
 
+        prev_ghost_visible = self.ghost_visible
+        self.updateGhostVisibility()
        
-        #Update Grid #rending purposes
         self.grid.setEntities(self.agentCoords, self.ghostCoords)
         self.surroundCounter = self.ghost.GetSurroundedCount(self.agentCoords)
         self.grid.setSurrendered(self.surroundCounter >= numAgents)
 
         #reward & termination
         self.Time += 1
-        reward, terminated, sucess = self.globalReward(prev_d_ghost_extract, prev_d_ghost_agents,prev_surround_count)
+        reward, terminated, sucess = self.globalReward(prev_d_ghost_extract, prev_d_ghost_agents, prev_surround_count, prev_ghost_visible)
 
-        info = {"t": self.Time, "hold": self.holdCounter, "success": sucess}
+        info = {
+            "t": self.Time, 
+            "hold": self.holdCounter, 
+            "success": sucess,
+            "time_first_seen": self.time_first_seen if self.time_first_seen is not None else self.Time 
+        }
         return reward, terminated, info
 
-    def globalReward(self, prev_d_ghost_extract, prev_d_ghost_agents, prev_surround_count):
-        reward = -0.01  # Small time penalty
+    def globalReward(self, prev_d_ghost_extract, prev_d_ghost_agents, prev_surround_count, prev_ghost_visible):
         terminated = False
         success = False
+        reward = -0.01
 
         self.calculateUsefulMetrics
+
+
 
         if self.surroundCounter >= numAgents:
             self.holdCounter += 1
@@ -256,7 +261,7 @@ class GameEngine:
             self.holdCounter = 0
 
         # End conditions
-        if self.holdCounter >= self.timeToKill and self.isExtracting(self.ghostCoords):
+        if self.holdCounter >= self.timeToKill : #and self.isExtracting(self.ghostCoords):
             reward += self.win_reward 
             terminated = True
             success = True
@@ -266,32 +271,58 @@ class GameEngine:
         if terminated:
             return reward, terminated, success
 
-        # ========== SIMPLIFIED REWARD STRUCTURE ==========
-        
-        # 1. SPARSE: Big reward for achieving surround
-        if self.surroundCounter >= numAgents and prev_surround_count < numAgents:
-            reward += 10.0  # First time achieving full surround
-        
-        # 2. SPARSE: Reward for maintaining surround
-        if self.surroundCounter >= numAgents:
-            reward += 2.0  # Per step while surrounded
-        
-        # 3. SPARSE: Reward for ghost getting closer to extraction (only when surrounded)
-        if self.surroundCounter >= numAgents:
-            current_dist = cheb_dist(self.grid.extraction_point_center, self.ghostCoords)
-            distance_improvement = prev_d_ghost_extract - current_dist
-            if distance_improvement > 0:
-                reward += distance_improvement * 5.0  # Ghost moved toward extraction
-        
-        # 4. SPARSE: Bonus for ghost in extraction zone while surrounded
-        if self.surroundCounter >= numAgents and self.isExtracting(self.ghostCoords):
-            reward += 5.0  # Per step in extraction zone
-        
-        # 5. DENSE but simple: Encourage agents to get within surround radius
-        agents_in_radius = sum(1 for a in self.agents if cheb_dist((a.x, a.y), self.ghostCoords) <= SURROUND_RADIUS)
-        reward += agents_in_radius * 0.5  # Small constant reward per agent in radius
+
+        ####First time finding ghost
+        if not prev_ghost_visible and self.ghost_visible and (self.time_first_seen is None) :
+            reward += self.reward_ghost_spotted
+            self.reward_ghost_spotted *= 0.8  # Decay for future sightings
+
+
+        if not self.ghost_visible:
+            reward += self.GridCoverageReward()
+            #reward += self.AgentSpreadReward()
+
+        ####Catching Ghost
+        if self.ghost_visible:
+            reward += 2* self.AgentToGhostDist_Reward(prev_d_ghost_agents)
+            reward += self.Surround_Reward(prev_surround_count)
+            reward += self.QuadrantCoverage_Reward()  
 
         return reward, terminated, success
+
+    def AgentSpreadReward(self):
+        avg_dist = 0.0
+        count = 0
+        for i in range(len(self.agents)):
+            for j in range(i + 1, len(self.agents)):
+                dist = cheb_dist((self.agents[i].x, self.agents[i].y), (self.agents[j].x, self.agents[j].y))
+                avg_dist += dist
+                count += 1
+        if count > 0:
+            avg_dist /= count
+        max_dist = max(self.grid.width, self.grid.height) - 1
+        return self.lambda_agent_spread * (avg_dist / max_dist)
+    
+    def GridCoverageReward(self):
+        """
+        Reward agents for exploring new/unvisited cells.
+        Higher reward for cells visited less frequently.
+        """
+        exploration_reward = 0.0
+        
+        for agent in self.agents:
+            cell = (agent.x, agent.y)
+            visit_count = self.visit_map.get(cell, 0)
+            
+            # Reward inversely proportional to visit count
+            # First visit = full reward, subsequent visits = diminishing returns
+            cell_reward = 1.0 / (1.0 + visit_count)
+            exploration_reward += self.lambda_grid_coverage * cell_reward
+            
+            # Update visit count
+            self.visit_map[cell] = visit_count + 1
+        
+        return exploration_reward
 
     def AgentClumpingPenalty(self):
         penalty = 0.0
@@ -321,7 +352,7 @@ class GameEngine:
             dist = cheb_dist((a.x, a.y), self.ghostCoords)
             norm_dist = dist / max_dist
             # Reduced from * 3 to * 1.5 to make spreading/positioning more important than pure distance
-            reward += self.lambda_agent_dist_to_ghost * ((1.0 - norm_dist) ** 3) * 1.5
+            reward += self.lambda_agent_dist_to_ghost * ((1.0 - norm_dist) ** 3) * 3
 
         return reward
     
@@ -345,39 +376,50 @@ class GameEngine:
 
         return reward
 
-    def QuadrantSpread_Reward(self):
+    def QuadrantCoverage_Reward(self):
         """
-        Reward agents for spreading around the ghost.
-        Uses 4 cardinal directions: Left, Right, Above, Below relative to ghost.
+        Reward agents for surrounding ghost from different cardinal directions.
+        Checks if agents are positioned left, right, above, or below the ghost.
+        Rewards scale with proximity - closer agents get higher rewards.
+        Always rewards coverage, not just when within surround radius.
         """
-        gx, gy = self.ghostCoords
         
-        # Track which quadrants are covered (Left, Right, Above, Below)
-        quadrants_covered = [False, False, False, False]
+        gx, gy = self.ghostCoords
+        directions = [False, False, False, False]  # Left, Right, Above, Below
+        direction_distances = [float('inf'), float('inf'), float('inf'), float('inf')]  # Track closest agent per direction
+        max_dist = max(self.grid.width, self.grid.height) - 1
         
         for ax, ay in self.agentCoords:
             dx = ax - gx
             dy = ay - gy
+            dist = cheb_dist((ax, ay), (gx, gy))
             
-            # Determine primary direction based on which axis has larger difference
+            # Determine primary direction (using dominance of dx vs dy)
             if abs(dx) > abs(dy):  # Horizontal dominance
                 if dx > 0:
-                    quadrants_covered[1] = True  # Right
+                    directions[1] = True  # Right
+                    direction_distances[1] = min(direction_distances[1], dist)
                 else:
-                    quadrants_covered[0] = True  # Left
-            else:  # Vertical dominance or equal
+                    directions[0] = True  # Left
+                    direction_distances[0] = min(direction_distances[0], dist)
+            else:  # Vertical dominance
                 if dy > 0:
-                    quadrants_covered[2] = True  # Below (positive y is down)
+                    directions[2] = True  # Above
+                    direction_distances[2] = min(direction_distances[2], dist)
                 else:
-                    quadrants_covered[3] = True  # Above
+                    directions[3] = True  # Below
+                    direction_distances[3] = min(direction_distances[3], dist)
+
+        # Calculate reward: base reward per direction, scaled by proximity
+        total_reward = 0.0
+        for i, covered in enumerate(directions):
+            if covered:
+                normalized_dist = direction_distances[i] / max_dist
+                proximity_multiplier = (2.0 - normalized_dist) ** 2  
+                
+                total_reward += self.lambda_quadrant_coverage * proximity_multiplier
         
-        # Reward based on number of quadrants covered
-        num_covered = sum(quadrants_covered)
-        
-        reward = 2
-        reward *= num_covered
-        
-        return reward
+        return total_reward
     
     def DirectionalPush_Reward(self):
         #Reward agents for positioning to PUSH the ghost toward extraction.
@@ -448,7 +490,7 @@ class GameEngine:
         
         #Hold in extraction zone
         if is_extracting and self.surroundCounter >= numAgents:
-            reward += 10.0 * (self.holdCounter / self.timeToKill)  # Scales 0→10 as hold progresses
+            reward += 10.0 * (self.holdCounter / self.timeToKill)  
 
         return reward
 
@@ -469,24 +511,71 @@ class GameEngine:
         (x2, y2) = self.grid.extraction_area_br
         return (x1 <= ghostCoords[0] <= x2) and (y1 <= ghostCoords[1] <= y2)
 
+    def canSeeGhost(self, agent_index):
+        if self.vision_radius is None:
+            return False
+        ax, ay = self.agents[agent_index].x, self.agents[agent_index].y
+        gx, gy = self.ghostCoords
+        return cheb_dist((ax, ay), (gx, gy)) <= self.vision_radius
 
-    def getAgentObs(self,agentIndex):
+    def canSeeAgent(self, observer_index, target_index):
+        if self.vision_radius is None:
+            return True
+        if observer_index == target_index:
+            return True
+        ax, ay = self.agents[observer_index].x, self.agents[observer_index].y
+        tx, ty = self.agents[target_index].x, self.agents[target_index].y
+        return cheb_dist((ax, ay), (tx, ty)) <= self.vision_radius
+
+    def updateGhostVisibility(self):
+        # Debug: check each agent's visibility
+        can_see = [self.canSeeGhost(i) for i in range(len(self.agents))]
+        self.ghost_visible = any(can_see)
+        
+        if self.ghost_visible:
+            self.ghost_last_seen_pos = self.ghostCoords
+
+            if self.time_first_seen is None:
+                self.time_first_seen = self.Time
+
+    def getAgentObs(self, agentIndex):
         W, H = self.grid.width, self.grid.height
         ax, ay = self.agents[agentIndex].x, self.agents[agentIndex].y
-        gx, gy = self.ghostCoords
-
-        # maybe you already include local agent pos + ghost pos
-        obs = [
-            ax / (W-1), ay / (H-1),
-            gx / (W-1), gy / (H-1),
-            self.grid.extraction_area_tl[0]/(W-1), self.grid.extraction_area_tl[1]/(H-1),
-            self.grid.extraction_area_br[0]/(W-1), self.grid.extraction_area_br[1]/(H-1),
-
-            #Show Progress - USE CHEBYSHEV to match surround logic!
-            cheb_dist((ax, ay), (gx, gy)) / max(W-1, H-1),
-            self.surroundCounter / numAgents,
-            self.holdCounter / self.timeToKill
-
+        
+        obs = [ax / (W-1), ay / (H-1)]
+        
+        if self.ghost_visible:
+            gx, gy = self.ghostCoords
+            obs += [gx / (W-1), gy / (H-1), 1.0]
+            dist_to_ghost = cheb_dist((ax, ay), (gx, gy)) / max(W-1, H-1)
+        else:
+            obs += [0.0, 0.0, 0.0]
+            dist_to_ghost = 0.0
+        
+        visible_agents = []
+        for other_idx in range(len(self.agents)):
+            if other_idx == agentIndex:
+                continue
+            if self.canSeeAgent(agentIndex, other_idx):
+                ox, oy = self.agents[other_idx].x, self.agents[other_idx].y
+                dist = cheb_dist((ax, ay), (ox, oy))
+                visible_agents.append((dist, ox, oy))
+        
+        visible_agents.sort(key=lambda x: x[0]) #Sort agent visibility by closest first
+        
+        for i in range(len(self.agents) - 1):
+            if i < len(visible_agents):
+                dist, ox, oy = visible_agents[i]
+                obs += [ox / (W-1), oy / (H-1), 1.0]
+            else:
+                obs += [0.0, 0.0, 0.0]
+        
+        obs += [
+            self.grid.extraction_area_tl[0]/(W-1), 
+            self.grid.extraction_area_tl[1]/(H-1),
+            self.grid.extraction_area_br[0]/(W-1), 
+            self.grid.extraction_area_br[1]/(H-1),
+            dist_to_ghost
         ]
 
         return obs
