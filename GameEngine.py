@@ -59,6 +59,7 @@ class GameEngine:
         
         # Initialize visit map for exploration tracking
         self.visit_map = {}
+        self.prev_agentCoords = None  # Track previous positions for movement detection
 
         self.Time = 0
         self.holdCounter = 0
@@ -89,6 +90,7 @@ class GameEngine:
         self.time_first_seen = None
         self.reward_ghost_spotted = self.reward_cfg.get("reward_ghost_spotted", 10)
         self.visit_map = {}  # Reset exploration tracking
+        self.prev_agentCoords = None  # Reset movement tracking
         self.updateGhostVisibility()
 
         return self.full_obs_helper()
@@ -217,6 +219,7 @@ class GameEngine:
         prev_d_ghost_extract = cheb_dist(self.grid.extraction_point_center, self.ghostCoords)
         prev_d_ghost_agents = [cheb_dist((a.x, a.y), (self.ghost.x, self.ghost.y)) for a in self.agents]
         prev_surround_count = self.ghost.GetSurroundedCount(self.agentCoords)
+        prev_agentCoords = self.prev_agentCoords  # Store for movement detection
         
 
         #Move Ghost FIRST 
@@ -226,6 +229,7 @@ class GameEngine:
         for a, act_id in zip(self.agents, actions):
             a.apply_action(act_id)
         self.agentCoords = [(a.x, a.y) for a in self.agents]
+        self.prev_agentCoords = self.agentCoords # Store for next step
 
         prev_ghost_visible = self.ghost_visible
         self.updateGhostVisibility()
@@ -236,7 +240,7 @@ class GameEngine:
 
         #reward & termination
         self.Time += 1
-        reward, terminated, sucess = self.globalReward(prev_d_ghost_extract, prev_d_ghost_agents, prev_surround_count, prev_ghost_visible)
+        reward, terminated, sucess = self.globalReward(prev_d_ghost_extract, prev_d_ghost_agents, prev_surround_count, prev_ghost_visible, prev_agentCoords)
 
         info = {
             "t": self.Time, 
@@ -246,7 +250,7 @@ class GameEngine:
         }
         return reward, terminated, info
 
-    def globalReward(self, prev_d_ghost_extract, prev_d_ghost_agents, prev_surround_count, prev_ghost_visible):
+    def globalReward(self, prev_d_ghost_extract, prev_d_ghost_agents, prev_surround_count, prev_ghost_visible, prev_agentCoords):
         terminated = False
         success = False
         reward = -0.01
@@ -271,7 +275,7 @@ class GameEngine:
         if terminated:
             return reward, terminated, success
 
-
+        
         ####First time finding ghost
         if not prev_ghost_visible and self.ghost_visible and (self.time_first_seen is None) :
             reward += self.reward_ghost_spotted
@@ -279,8 +283,20 @@ class GameEngine:
 
 
         if not self.ghost_visible:
-            reward += self.GridCoverageReward()
-            #reward += self.AgentSpreadReward()
+            # Only reward exploration if agents are actually moving
+            if prev_agentCoords is not None:
+                num_agents_moved = sum(1 for i, (x, y) in enumerate(self.agentCoords) if (x, y) != prev_agentCoords[i])
+                if num_agents_moved > 0:
+                    # Agents moving - give exploration rewards
+                    reward += self.GridCoverageReward()
+                    reward += self.AgentSpreadReward()
+                else:
+                    # All agents standing still - penalty
+                    reward -= 0.5
+            else:
+                # First step of episode - give rewards
+                reward += self.GridCoverageReward()
+                reward += self.AgentSpreadReward()
 
         ####Catching Ghost
         if self.ghost_visible:
@@ -351,7 +367,6 @@ class GameEngine:
         for a in self.agents:
             dist = cheb_dist((a.x, a.y), self.ghostCoords)
             norm_dist = dist / max_dist
-            # Reduced from * 3 to * 1.5 to make spreading/positioning more important than pure distance
             reward += self.lambda_agent_dist_to_ghost * ((1.0 - norm_dist) ** 3) * 3
 
         return reward
