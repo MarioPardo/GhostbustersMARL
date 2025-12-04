@@ -2,7 +2,7 @@ import json
 import matplotlib.pyplot as plt
 import os
 
-METRICS_PATH_P1 = "pymarl/results/sacred/ghostbusters_qmix/ghostbusters_partobv_stage2/"
+METRICS_PATH_P1 = "pymarl/results/sacred/ghostbusters_qmix/ghostbusters_partobv_stage3/"
 METRICS_PATH_P2 = "/metrics.json"
 OUTPUT_FIG = "metrics_summary.png"
 

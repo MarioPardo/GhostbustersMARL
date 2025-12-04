@@ -16,10 +16,12 @@ presetGhostCoords = (15,25)
 
 class GameEngine:
 
-    def __init__(self, extractionTL_x: int, extractionTL_y: int, extractionBR_x:int, extractionBR_y, episodeLimit: int, reward_cfg, spawn_radius: int, ghost_move_prob: float, vision_radius: int = None):
+    def __init__(self, extractionTL_x: int, extractionTL_y: int, extractionBR_x:int, extractionBR_y, episodeLimit: int, reward_cfg, spawn_radius: int, ghost_move_prob: float, vision_radius: int = 6, ghost_avoid_radius: int = 2, surround_radius: int = 3):
         
         self.spawn_radius = spawn_radius
         self.vision_radius = vision_radius if vision_radius is not None else 15
+        self.ghost_avoid_radius = ghost_avoid_radius
+        self.surround_radius = surround_radius
         self.grid = Grid(extractionTL_x, extractionTL_y, extractionBR_x, extractionBR_y, visibilityRadius=self.vision_radius)
         self.agentCoords, self.ghostCoords = self.SpawnEntities(randomized=True, spawn_radius=spawn_radius)
         self.grid.setEntities(self.agentCoords, self.ghostCoords)
@@ -33,7 +35,7 @@ class GameEngine:
             agent = Agent(ax, ay, agent_id=i)
             self.agents.append(agent)
 
-        self.ghost = Ghost(self.ghostCoords[0], self.ghostCoords[1], movementProb=ghost_move_prob)
+        self.ghost = Ghost(self.ghostCoords[0], self.ghostCoords[1], movementProb=ghost_move_prob, avoidRadius=self.ghost_avoid_radius, surroundRadius=self.surround_radius)
 
 
         self.episodeLimit = episodeLimit
@@ -55,7 +57,6 @@ class GameEngine:
         self.lambda_grid_coverage = reward_cfg.get("lambda_grid_coverage", 0.0)
 
         self.timeToKill = TIME_TO_KILL
-        self.surroundRadius = SURROUND_RADIUS
         
         # Initialize visit map for exploration tracking
         self.visit_map = {}
@@ -257,15 +258,13 @@ class GameEngine:
 
         self.calculateUsefulMetrics
 
-
-
         if self.surroundCounter >= numAgents:
             self.holdCounter += 1
         else:
             self.holdCounter = 0
 
         # End conditions
-        if self.holdCounter >= self.timeToKill : #and self.isExtracting(self.ghostCoords):
+        if self.holdCounter >= self.timeToKill : 
             reward += self.win_reward 
             terminated = True
             success = True
@@ -275,7 +274,7 @@ class GameEngine:
         if terminated:
             return reward, terminated, success
 
-        
+
         ####First time finding ghost
         if not prev_ghost_visible and self.ghost_visible and (self.time_first_seen is None) :
             reward += self.reward_ghost_spotted
@@ -291,10 +290,10 @@ class GameEngine:
                     reward += self.GridCoverageReward()
                     reward += self.AgentSpreadReward()
                 else:
-                    # All agents standing still - penalty
+                    # All agents standing still: penalty
                     reward -= 0.5
             else:
-                # First step of episode - give rewards
+                # First step of episode:  give rewards
                 reward += self.GridCoverageReward()
                 reward += self.AgentSpreadReward()
 
@@ -320,10 +319,6 @@ class GameEngine:
         return self.lambda_agent_spread * (avg_dist / max_dist)
     
     def GridCoverageReward(self):
-        """
-        Reward agents for exploring new/unvisited cells.
-        Higher reward for cells visited less frequently.
-        """
         exploration_reward = 0.0
         
         for agent in self.agents:
@@ -375,7 +370,7 @@ class GameEngine:
         reward = 0.0
         new_surround_count = self.ghost.GetSurroundedCount(self.agentCoords)
 
-        # Progressive surround rewards - bonus for entering radius
+        # Progressive surround rewards : bonus for entering radius
         if new_surround_count > prev_surround_count:
             reward += self.reward_new_surround * (new_surround_count - prev_surround_count) 
         
@@ -392,13 +387,6 @@ class GameEngine:
         return reward
 
     def QuadrantCoverage_Reward(self):
-        """
-        Reward agents for surrounding ghost from different cardinal directions.
-        Checks if agents are positioned left, right, above, or below the ghost.
-        Rewards scale with proximity - closer agents get higher rewards.
-        Always rewards coverage, not just when within surround radius.
-        """
-        
         gx, gy = self.ghostCoords
         directions = [False, False, False, False]  # Left, Right, Above, Below
         direction_distances = [float('inf'), float('inf'), float('inf'), float('inf')]  # Track closest agent per direction
@@ -621,7 +609,7 @@ class GameEngine:
 # ----------- Small demo loop -----------
 if __name__ == "__main__":
 
-    Game = GameEngine(25,25,29,29, episodeLimit=4000)
+    Game = GameEngine(25,25,29,29, episodeLimit=4000, reward_cfg={}, spawn_radius=10,ghost_move_prob= 1)
     Game.grid.init_display(cell_size=20)
 
     clock = pygame.time.Clock()

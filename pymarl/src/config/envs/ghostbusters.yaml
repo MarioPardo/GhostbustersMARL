@@ -13,12 +13,12 @@ env_args:
   spawn_radius: 10  # Agents spawn within 10 cells of ghost (comment out for normal difficulty)
 
   #reward
-  reward_kill: 10000      # MASSIVE success signal (matches code: 10000 in globalReward)
-  reward_surrounded: 50   # Bonus each step when all agents surround
-  reward_new_surround: 100  # High reward for each new agent joining surround (progressive)
+  reward_kill: 10000    
+  reward_surrounded: 50   
+  reward_new_surround: 100  
   lambda_quadrant_coverage: 0.7
   lambda_ghost_dist_to_extraction: 1
-  lambda_agent_dist_to_ghost: 3.0   # Potential field strength (3 agents × 3.0 = +9 max when all on ghost)
+  lambda_agent_dist_to_ghost: 3.0   
 
   # --- SMAC-style keys used only for naming logs ---
   map_name: ghostbusters

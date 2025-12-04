@@ -31,6 +31,8 @@ class GhostbustersPyMARLEnv:
         self.spawn_radius = kwargs.get("spawn_radius", None)
         self.ghost_move_prob = kwargs.get("ghost_move_prob", 1.0)
         self.vision_radius = kwargs.get("vision_radius", None)
+        self.ghost_avoid_radius = kwargs.get("ghost_avoid_radius", 2)
+        self.surround_radius = kwargs.get("surround_radius", 3)
         
         self._obs_dim = 2 + 3 + (n_agents - 1) * 3 + 4 + 1
         self._state_dim = 2 * n_agents + 3 + 4 + 1 + 3
@@ -93,7 +95,9 @@ class GhostbustersPyMARLEnv:
             reward_cfg=rewardcfg,
             spawn_radius=self.spawn_radius,  
             ghost_move_prob=self.ghost_move_prob,
-            vision_radius=self.vision_radius
+            vision_radius=self.vision_radius,
+            ghost_avoid_radius=self.ghost_avoid_radius,
+            surround_radius=self.surround_radius
         )
 
     # -------- required API --------

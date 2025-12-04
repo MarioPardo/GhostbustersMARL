@@ -15,11 +15,13 @@ env_args:
 
 
   ghost_move_prob : 0  
-  spawn_radius: 10        
+  spawn_radius: 10   
+  ghost_avoid_radius: 2
+  surround_radius: 3     
 
   reward_kill: 100       
   reward_surrounded: 5   
-  reward_new_surround: 10 #
+  reward_new_surround: 10 
   lambda_quadrant_coverage: 0.7
   lambda_ghost_dist_to_extraction: 0.1
   lambda_agent_dist_to_ghost: 1.0 

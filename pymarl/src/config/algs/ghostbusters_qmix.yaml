@@ -1,68 +1,69 @@
 name: ghostbusters_qmix
 
 # --- Agent / Controller ---
-agent: rnn                 # built-in registered agent
-mac: basic_mac             # multi-agent controller
+agent: rnn                 
+mac: basic_mac             
 runner: episode
 
 # RNN agent
 use_rnn: True
-rnn_hidden_dim: 128        # Increased from 64 for richer representations
+rnn_hidden_dim: 128        
 
 # Action selection & outputs
 agent_output_type: q
 action_selector: epsilon_greedy
 
 # --- Mixer & Learner ---
-mixer: qmix                # QMIX for non-linear value combination
-learner: q_learner         # learner class for (DQN-style) VDN/QMIX
+mixer: qmix                
+learner: q_learner     
 
 # QMIX-specific hyperparameters
-mixing_embed_dim: 32       # Embedding dimension for mixer hypernetworks
-hypernet_layers: 2         # Number of layers in hypernetworks
-hypernet_embed: 64         # Hidden size of hypernetworks
+mixing_embed_dim: 32       
+hypernet_layers: 2        
+hypernet_embed: 64         
+
+
+# Target network update settings
+target_update_interval: 200           
+target_update_interval_or_tau: 200    
+tau: 0.005                            
 
 # --- Training ---
 gamma: 0.99
 double_q: True
 
 optimizer: adam
-lr: 0.0003                 # Even slower for QMIX stability
-critic_lr: 0.0003
-grad_norm_clip: 5          # TIGHTER clipping (was 10, gradients were 44k!)
+lr: 0.0003                
+grad_norm_clip: 5          
 
-batch_size: 64             # Larger batches for QMIX stability
-buffer_size: 50000         # Large buffer for diverse experiences
-batch_size_run: 1          # steps per env before insert
+batch_size: 64             
+buffer_size: 50000         
+batch_size_run: 1          
 
-t_max: 800000              # Extended training for better convergence
+t_max: 800000             
 
-# Epsilon-greedy exploration - EXTENDED FOR SPARSE REWARDS
+# Epsilon-greedy exploration 
 epsilon_start: 1
-epsilon_finish: 0.05       # Lower floor for continued exploration (was 0.1)
-epsilon_anneal_time: 450000  # Even slower anneal for QMIX
+epsilon_finish: 0.05       
+epsilon_anneal_time: 450000  
 
 # Logging with reward normalization for stability
 standardise_returns: False
 standardise_rewards: True   # Normalize rewards to prevent Q-explosion
-reward_standardisation_alpha: 0.01  # Running mean/std update rate
+reward_standardisation_alpha: 0.01 
 
 # --- Logging / Eval ---
 test_nepisode: 5
-test_interval: 10000        # test every 10k env steps
+test_interval: 10000        
 log_interval: 2000
 save_model: True
 
-# Exploration during evaluation (tests)
-evaluation_epsilon: 0.1     # small randomization at test time
+# Exploration during evaluation
+evaluation_epsilon: 0.1   
 
-# Misc flags some forks read (safe defaults)
+# Misc flags some forks read
 obs_agent_id: False
 obs_last_action: False
 state_last_action: False
 mask_before_softmax: False
 
-# Target network update settings
-target_update_interval: 200           # hard update every 200 steps
-target_update_interval_or_tau: 200    # duplicate for newer code paths
-tau: 0.005                            # only used if the code uses soft updates

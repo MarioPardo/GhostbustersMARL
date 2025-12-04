@@ -1,0 +1,365 @@
+[INFO 11:54:17] pymarl Running command 'my_main'
+[INFO 11:54:17] pymarl Started run with ID "2"
+[DEBUG 11:54:17] pymarl Starting Heartbeat
+[DEBUG 11:54:17] my_main Started
+[WARNING 11:54:17] my_main CUDA flag use_cuda was switched OFF automatically because no CUDA devices are available!
+[INFO 11:54:17] my_main Experiment Parameters:
+[INFO 11:54:17] my_main 
+
+{   'action_selector': 'epsilon_greedy',
+    'add_value_last_step': True,
+    'agent': 'rnn',
+    'agent_output_type': 'q',
+    'batch_size': 64,
+    'batch_size_run': 1,
+    'buffer_cpu_only': True,
+    'buffer_size': 50000,
+    'checkpoint_path': 'results/models/QMIX_PartObv_Stage2_Winner',
+    'common_reward': True,
+    'critic_lr': 0.0003,
+    'double_q': True,
+    'env': 'ghostbusters',
+    'env_args': {   'episode_limit': 400,
+                    'extraction_br': [   29,
+                                         29],
+                    'extraction_tl': [   25,
+                                         25],
+                    'ghost_avoid_radius': 3,
+                    'ghost_move_prob': 1,
+                    'height': 30,
+                    'key': 'ghostbusters_partobv_stage3',
+                    'lambda_agent_dist_to_ghost': 2,
+                    'lambda_agent_spread': 1.0,
+                    'lambda_ghost_dist_to_extraction': 0.1,
+                    'lambda_grid_coverage': 0.5,
+                    'lambda_quadrant_coverage': 0.2,
+                    'map_name': 'ghostbusters_partobv_stage3',
+                    'n_agents': 3,
+                    'render': False,
+                    'render_every': 1,
+                    'reward_ghost_spotted': 20,
+                    'reward_ghost_visible': 0.5,
+                    'reward_kill': 200,
+                    'reward_new_surround': 8,
+                    'reward_surrounded': 5,
+                    'seed': 499296492,
+                    'spawn_radius': 15,
+                    'surround_radius': 2,
+                    'vision_radius': 3,
+                    'width': 30},
+    'epsilon_anneal_time': 450000,
+    'epsilon_finish': 0.05,
+    'epsilon_start': 1,
+    'evaluate': False,
+    'evaluation_epsilon': 0.1,
+    'gamma': 0.99,
+    'grad_norm_clip': 5,
+    'hidden_dim': 64,
+    'hypergroup': None,
+    'hypernet_embed': 64,
+    'hypernet_layers': 2,
+    'label': 'default_label',
+    'learner': 'q_learner',
+    'learner_log_interval': 2000,
+    'load_step': 0,
+    'local_results_path': 'results',
+    'log_interval': 2000,
+    'lr': 0.0003,
+    'mac': 'basic_mac',
+    'mask_before_softmax': False,
+    'mixer': 'qmix',
+    'mixing_embed_dim': 32,
+    'name': 'ghostbusters_qmix',
+    'obs_agent_id': False,
+    'obs_last_action': False,
+    'optim_alpha': 0.99,
+    'optim_eps': 1e-05,
+    'optimizer': 'adam',
+    'render': False,
+    'repeat_id': 1,
+    'reward_scalarisation': 'sum',
+    'reward_standardisation_alpha': 0.01,
+    'rnn_hidden_dim': 128,
+    'runner': 'episode',
+    'runner_log_interval': 2000,
+    'save_model': True,
+    'save_model_interval': 50000,
+    'save_replay': False,
+    'seed': 499296492,
+    'standardise_returns': False,
+    'standardise_rewards': True,
+    'state_last_action': False,
+    't_max': 800000,
+    'target_update_interval': 200,
+    'target_update_interval_or_tau': 200,
+    'tau': 0.005,
+    'test_greedy': True,
+    'test_interval': 10000,
+    'test_nepisode': 5,
+    'use_cuda': False,
+    'use_rnn': True,
+    'use_tensorboard': False,
+    'use_wandb': False,
+    'wandb_mode': 'offline',
+    'wandb_project': None,
+    'wandb_save_model': False,
+    'wandb_team': None}
+
+[GhostbustersEnv] Unused env args ignored: ['vision_radius', 'spawn_radius', 'ghost_move_prob', 'ghost_avoid_radius', 'surround_radius', 'reward_kill', 'reward_surrounded', 'reward_new_surround', 'reward_ghost_spotted', 'reward_ghost_visible', 'lambda_agent_spread', 'lambda_grid_coverage', 'lambda_quadrant_coverage', 'lambda_ghost_dist_to_extraction', 'lambda_agent_dist_to_ghost', 'render', 'render_every', 'reward_scalarisation']
+
+===== DEBUG ARGS =====
+action_selector: epsilon_greedy
+add_value_last_step: True
+agent: rnn
+agent_output_type: q
+batch_size: 64
+batch_size_run: 1
+buffer_cpu_only: True
+buffer_size: 50000
+checkpoint_path: results/models/QMIX_PartObv_Stage2_Winner
+common_reward: True
+critic_lr: 0.0003
+device: cpu
+double_q: True
+env: ghostbusters
+env_args: {'n_agents': 3, 'episode_limit': 400, 'width': 30, 'height': 30, 'extraction_tl': [25, 25], 'extraction_br': [29, 29], 'seed': 499296492, 'vision_radius': 3, 'spawn_radius': 15, 'ghost_move_prob': 1, 'ghost_avoid_radius': 3, 'surround_radius': 2, 'reward_kill': 200, 'reward_surrounded': 5, 'reward_new_surround': 8, 'reward_ghost_spotted': 20, 'reward_ghost_visible': 0.5, 'lambda_agent_spread': 1.0, 'lambda_grid_coverage': 0.5, 'lambda_quadrant_coverage': 0.2, 'lambda_ghost_dist_to_extraction': 0.1, 'lambda_agent_dist_to_ghost': 2, 'map_name': 'ghostbusters_partobv_stage3', 'key': 'ghostbusters_partobv_stage3', 'render': False, 'render_every': 1}
+epsilon_anneal_time: 450000
+epsilon_finish: 0.05
+epsilon_start: 1
+evaluate: False
+evaluation_epsilon: 0.1
+gamma: 0.99
+grad_norm_clip: 5
+hidden_dim: 64
+hypergroup: None
+hypernet_embed: 64
+hypernet_layers: 2
+label: default_label
+learner: q_learner
+learner_log_interval: 2000
+load_step: 0
+local_results_path: results
+log_interval: 2000
+lr: 0.0003
+mac: basic_mac
+mask_before_softmax: False
+mixer: qmix
+mixing_embed_dim: 32
+n_actions: 9
+n_agents: 3
+name: ghostbusters_qmix
+obs_agent_id: False
+obs_last_action: False
+optim_alpha: 0.99
+optim_eps: 1e-05
+optimizer: adam
+render: False
+repeat_id: 1
+reward_scalarisation: sum
+reward_standardisation_alpha: 0.01
+rnn_hidden_dim: 128
+runner: episode
+runner_log_interval: 2000
+save_model: True
+save_model_interval: 50000
+save_replay: False
+seed: 499296492
+standardise_returns: False
+standardise_rewards: True
+state_last_action: False
+state_shape: 17
+t_max: 800000
+target_update_interval: 200
+target_update_interval_or_tau: 200
+tau: 0.005
+test_greedy: True
+test_interval: 10000
+test_nepisode: 5
+unique_token: ghostbusters_qmix_seed499296492_ghostbusters_partobv_stage3_2025-11-25 11:54:17.294969
+use_cuda: False
+use_rnn: True
+use_tensorboard: False
+use_wandb: False
+wandb_mode: offline
+wandb_project: None
+wandb_save_model: False
+wandb_team: None
+======================
+
+[INFO 11:54:18] my_main Loading model from results/models/QMIX_PartObv_Stage2_Winner/752306
+[INFO 11:54:18] my_main Beginning training for 800000 timesteps
+/Users/mario/Documents/Programming/GhostbustersMARL/pymarl/src/components/episode_buffer.py:93: UserWarning: Using a non-tuple sequence for multidimensional indexing is deprecated and will be changed in pytorch 2.9; use x[tuple(seq)] instead of x[seq]. In pytorch 2.9 this will be interpreted as tensor index, x[torch.tensor(seq)], which will result either in an error or a different result (Triggered internally at /Users/runner/work/pytorch/pytorch/pytorch/torch/csrc/autograd/python_variable_indexing.cpp:312.)
+  target["filled"][slices] = 1
+/Users/mario/Documents/Programming/GhostbustersMARL/pymarl/src/components/episode_buffer.py:105: UserWarning: Using a non-tuple sequence for multidimensional indexing is deprecated and will be changed in pytorch 2.9; use x[tuple(seq)] instead of x[seq]. In pytorch 2.9 this will be interpreted as tensor index, x[torch.tensor(seq)], which will result either in an error or a different result (Triggered internally at /Users/runner/work/pytorch/pytorch/pytorch/torch/csrc/autograd/python_variable_indexing.cpp:312.)
+  self._check_safe_view(v, target[k][_slices])
+/Users/mario/Documents/Programming/GhostbustersMARL/pymarl/src/components/episode_buffer.py:106: UserWarning: Using a non-tuple sequence for multidimensional indexing is deprecated and will be changed in pytorch 2.9; use x[tuple(seq)] instead of x[seq]. In pytorch 2.9 this will be interpreted as tensor index, x[torch.tensor(seq)], which will result either in an error or a different result (Triggered internally at /Users/runner/work/pytorch/pytorch/pytorch/torch/csrc/autograd/python_variable_indexing.cpp:312.)
+  target[k][_slices] = v.view_as(target[k][_slices])
+/Users/mario/Documents/Programming/GhostbustersMARL/pymarl/src/components/episode_buffer.py:110: UserWarning: Using a non-tuple sequence for multidimensional indexing is deprecated and will be changed in pytorch 2.9; use x[tuple(seq)] instead of x[seq]. In pytorch 2.9 this will be interpreted as tensor index, x[torch.tensor(seq)], which will result either in an error or a different result (Triggered internally at /Users/runner/work/pytorch/pytorch/pytorch/torch/csrc/autograd/python_variable_indexing.cpp:312.)
+  v = target[k][_slices]
+/Users/mario/Documents/Programming/GhostbustersMARL/pymarl/src/components/episode_buffer.py:113: UserWarning: Using a non-tuple sequence for multidimensional indexing is deprecated and will be changed in pytorch 2.9; use x[tuple(seq)] instead of x[seq]. In pytorch 2.9 this will be interpreted as tensor index, x[torch.tensor(seq)], which will result either in an error or a different result (Triggered internally at /Users/runner/work/pytorch/pytorch/pytorch/torch/csrc/autograd/python_variable_indexing.cpp:312.)
+  target[new_k][_slices] = v.view_as(target[new_k][_slices])
+[INFO 11:54:19] my_main t_env: 752706 / 800000
+[INFO 11:54:19] my_main Estimated time left: 0 seconds. Time passed: 0 seconds
+[INFO 11:54:19] my_main Saving models to results/models/ghostbusters_qmix_seed499296492_ghostbusters_partobv_stage3_2025-11-25 11:54:17.294969/752706
+[INFO 11:54:19] my_main Recent Stats | t_env:     752706 | Episode:        1
+ep_length_mean:          400.0000	epsilon:                   0.0500	hold_mean:                 0.0000	return_mean:             1554.1406
+return_std:                0.0000	success_mean:              0.0000	t_mean:                  400.0000	test_ep_length_mean:     400.0000
+test_hold_mean:            0.0000	test_return_mean:        1373.2834	test_return_std:         920.3029	test_success_mean:         0.0000
+test_t_mean:             400.0000	test_time_first_seen_mean:240.0000	time_first_seen_mean:    282.0000	
+[INFO 11:54:20] my_main Recent Stats | t_env:     754829 | Episode:        7
+ep_length_mean:          376.9167	epsilon:                   0.0500	hold_mean:                 0.4167	return_mean:             1720.4097
+return_std:              500.2528	success_mean:              0.0833	t_mean:                  376.9167	test_ep_length_mean:     400.0000
+test_hold_mean:            0.0000	test_return_mean:        1373.2834	test_return_std:         920.3029	test_success_mean:         0.0000
+test_t_mean:             400.0000	test_time_first_seen_mean:240.0000	time_first_seen_mean:    201.8333	
+[INFO 11:54:20] my_main Recent Stats | t_env:     756995 | Episode:       13
+ep_length_mean:          371.6111	epsilon:                   0.0500	hold_mean:                 0.5556	return_mean:             1465.6241
+return_std:              596.3827	success_mean:              0.1111	t_mean:                  371.6111	test_ep_length_mean:     400.0000
+test_hold_mean:            0.0000	test_return_mean:        1373.2834	test_return_std:         920.3029	test_success_mean:         0.0000
+test_t_mean:             400.0000	test_time_first_seen_mean:240.0000	time_first_seen_mean:    168.8889	
+[INFO 11:54:21] my_main Recent Stats | t_env:     758995 | Episode:       18
+ep_length_mean:          378.7083	epsilon:                   0.0500	hold_mean:                 0.4167	return_mean:             1291.7609
+return_std:              542.6269	success_mean:              0.0833	t_mean:                  378.7083	test_ep_length_mean:     400.0000
+test_hold_mean:            0.0000	test_return_mean:        1373.2834	test_return_std:         920.3029	test_success_mean:         0.0000
+test_t_mean:             400.0000	test_time_first_seen_mean:240.0000	time_first_seen_mean:    152.4667	
+[INFO 11:54:21] my_main Recent Stats | t_env:     760995 | Episode:       23
+ep_length_mean:          382.9667	epsilon:                   0.0500	hold_mean:                 0.3333	return_mean:             1296.7739
+return_std:              597.0048	success_mean:              0.0667	t_mean:                  382.9667	test_ep_length_mean:     400.0000
+test_hold_mean:            0.0000	test_return_mean:        1373.2834	test_return_std:         920.3029	test_success_mean:         0.0000
+test_t_mean:             400.0000	test_time_first_seen_mean:240.0000	time_first_seen_mean:    158.1733	
+[INFO 11:54:22] my_main t_env: 762971 / 800000
+[INFO 11:54:22] my_main Estimated time left: 10 seconds. Time passed: 3 seconds
+[INFO 11:54:22] my_main Recent Stats | t_env:     763371 | Episode:       29
+ep_length_mean:          382.1667	epsilon:                   0.0500	hold_mean:                 0.5000	return_mean:             1240.8905
+return_std:              755.4944	success_mean:              0.1000	t_mean:                  382.1667	test_ep_length_mean:     400.0000
+test_hold_mean:            0.0000	test_return_mean:        1282.8936	test_return_std:         700.6095	test_success_mean:         0.0000
+test_t_mean:             400.0000	test_time_first_seen_mean:178.1000	time_first_seen_mean:    108.3733	
+[INFO 11:54:23] my_main Recent Stats | t_env:     765371 | Episode:       34
+ep_length_mean:          391.4000	epsilon:                   0.0500	hold_mean:                 0.3333	return_mean:             1097.6408
+return_std:              824.4971	success_mean:              0.0667	t_mean:                  391.4000	test_ep_length_mean:     400.0000
+test_hold_mean:            0.0000	test_return_mean:        1282.8936	test_return_std:         700.6095	test_success_mean:         0.0000
+test_t_mean:             400.0000	test_time_first_seen_mean:178.1000	time_first_seen_mean:    111.3200	
+[INFO 11:54:23] my_main Recent Stats | t_env:     767371 | Episode:       39
+ep_length_mean:          399.2000	epsilon:                   0.0500	hold_mean:                 0.1667	return_mean:             1156.0172
+return_std:              842.8254	success_mean:              0.0333	t_mean:                  399.2000	test_ep_length_mean:     400.0000
+test_hold_mean:            0.0000	test_return_mean:        1282.8936	test_return_std:         700.6095	test_success_mean:         0.0000
+test_t_mean:             400.0000	test_time_first_seen_mean:178.1000	time_first_seen_mean:    116.9600	
+[INFO 11:54:24] my_main Recent Stats | t_env:     769371 | Episode:       44
+ep_length_mean:          399.2000	epsilon:                   0.0500	hold_mean:                 0.1667	return_mean:             1269.7124
+return_std:              982.2899	success_mean:              0.0333	t_mean:                  399.2000	test_ep_length_mean:     400.0000
+test_hold_mean:            0.0000	test_return_mean:        1282.8936	test_return_std:         700.6095	test_success_mean:         0.0000
+test_t_mean:             400.0000	test_time_first_seen_mean:178.1000	time_first_seen_mean:    109.4800	
+[INFO 11:54:24] my_main Recent Stats | t_env:     771371 | Episode:       49
+ep_length_mean:          399.2000	epsilon:                   0.0500	hold_mean:                 0.1667	return_mean:             1160.2112
+return_std:              920.3733	success_mean:              0.0333	t_mean:                  399.2000	test_ep_length_mean:     400.0000
+test_hold_mean:            0.0000	test_return_mean:        1282.8936	test_return_std:         700.6095	test_success_mean:         0.0000
+test_t_mean:             400.0000	test_time_first_seen_mean:178.1000	time_first_seen_mean:     90.7200	
+[INFO 11:54:25] my_main t_env: 773089 / 800000
+[INFO 11:54:25] my_main Estimated time left: 8 seconds. Time passed: 6 seconds
+[INFO 11:54:25] my_main Recent Stats | t_env:     773489 | Episode:       55
+ep_length_mean:          390.6000	epsilon:                   0.0500	hold_mean:                 0.1667	return_mean:             1245.3210
+return_std:              939.2964	success_mean:              0.0333	t_mean:                  390.6000	test_ep_length_mean:     400.0000
+test_hold_mean:            0.0000	test_return_mean:        1088.7307	test_return_std:         677.5871	test_success_mean:         0.0000
+test_t_mean:             400.0000	test_time_first_seen_mean:208.3333	time_first_seen_mean:    103.1200	
+[INFO 11:54:26] my_main Recent Stats | t_env:     775533 | Episode:       61
+ep_length_mean:          378.7333	epsilon:                   0.0500	hold_mean:                 0.5000	return_mean:             1353.0935
+return_std:              865.0915	success_mean:              0.1000	t_mean:                  378.7333	test_ep_length_mean:     400.0000
+test_hold_mean:            0.0000	test_return_mean:        1088.7307	test_return_std:         677.5871	test_success_mean:         0.0000
+test_t_mean:             400.0000	test_time_first_seen_mean:208.3333	time_first_seen_mean:    111.6067	
+/Users/mario/Documents/Programming/GhostbustersMARL/pymarl/src/components/episode_buffer.py:152: UserWarning: Using a non-tuple sequence for multidimensional indexing is deprecated and will be changed in pytorch 2.9; use x[tuple(seq)] instead of x[seq]. In pytorch 2.9 this will be interpreted as tensor index, x[torch.tensor(seq)], which will result either in an error or a different result (Triggered internally at /Users/runner/work/pytorch/pytorch/pytorch/torch/csrc/autograd/python_variable_indexing.cpp:312.)
+  new_data.transition_data[k] = v[item]
+[INFO 11:54:27] my_main Recent Stats | t_env:     777533 | Episode:       66
+ep_length_mean:          378.7333	epsilon:                   0.0500	grad_norm:               4391.8618	hold_mean:                 0.5000
+loss:                    382.1409	q_taken_mean:              3.7231	return_mean:             1326.5992	return_std:              888.4891
+success_mean:              0.1000	t_mean:                  378.7333	target_mean:               0.1523	td_error_abs:             10.8382
+test_ep_length_mean:     400.0000	test_hold_mean:            0.0000	test_return_mean:        1088.7307	test_return_std:         677.5871
+test_success_mean:         0.0000	test_t_mean:             400.0000	test_time_first_seen_mean:208.3333	time_first_seen_mean:    112.2067
+
+[INFO 11:54:29] my_main Recent Stats | t_env:     779533 | Episode:       71
+ep_length_mean:          378.7333	epsilon:                   0.0500	grad_norm:               3927.3540	hold_mean:                 0.5000
+loss:                    349.7313	q_taken_mean:              3.4282	return_mean:             1200.6984	return_std:              771.2419
+success_mean:              0.1000	t_mean:                  378.7333	target_mean:               0.1557	td_error_abs:             10.0350
+test_ep_length_mean:     400.0000	test_hold_mean:            0.0000	test_return_mean:        1088.7307	test_return_std:         677.5871
+test_success_mean:         0.0000	test_t_mean:             400.0000	test_time_first_seen_mean:208.3333	time_first_seen_mean:    103.9667
+
+[INFO 11:54:31] my_main Recent Stats | t_env:     781533 | Episode:       76
+ep_length_mean:          378.7333	epsilon:                   0.0500	grad_norm:               3052.3632	hold_mean:                 0.5000
+loss:                    280.7589	q_taken_mean:              2.6696	return_mean:             1057.8797	return_std:              691.5658
+success_mean:              0.1000	t_mean:                  378.7333	target_mean:               0.1441	td_error_abs:              8.7143
+test_ep_length_mean:     400.0000	test_hold_mean:            0.0000	test_return_mean:        1088.7307	test_return_std:         677.5871
+test_success_mean:         0.0000	test_t_mean:             400.0000	test_time_first_seen_mean:208.3333	time_first_seen_mean:    120.7267
+
+[INFO 11:54:33] my_main t_env: 783133 / 800000
+[INFO 11:54:33] my_main Estimated time left: 13 seconds. Time passed: 14 seconds
+[INFO 11:54:33] my_main Recent Stats | t_env:     783533 | Episode:       81
+ep_length_mean:          388.1333	epsilon:                   0.0500	grad_norm:               2408.9192	hold_mean:                 0.3333
+loss:                    226.1392	q_taken_mean:              1.9957	return_mean:             709.7501	return_std:              519.5913
+success_mean:              0.0667	t_mean:                  388.1333	target_mean:               0.1358	td_error_abs:              7.8463
+test_ep_length_mean:     400.0000	test_hold_mean:            0.0000	test_return_mean:        826.9395	test_return_std:         516.0435
+test_success_mean:         0.0000	test_t_mean:             400.0000	test_time_first_seen_mean:256.2500	time_first_seen_mean:    181.7267
+
+[INFO 11:54:35] my_main Recent Stats | t_env:     785533 | Episode:       86
+ep_length_mean:          400.0000	epsilon:                   0.0500	grad_norm:               1964.7870	hold_mean:                 0.0000
+loss:                    185.0996	q_taken_mean:              1.4918	return_mean:             358.8626	return_std:              330.2225
+success_mean:              0.0000	t_mean:                  400.0000	target_mean:               0.1217	td_error_abs:              7.0141
+test_ep_length_mean:     400.0000	test_hold_mean:            0.0000	test_return_mean:        826.9395	test_return_std:         516.0435
+test_success_mean:         0.0000	test_t_mean:             400.0000	test_time_first_seen_mean:256.2500	time_first_seen_mean:    225.9600
+
+[INFO 11:54:37] my_main Recent Stats | t_env:     787533 | Episode:       91
+ep_length_mean:          400.0000	epsilon:                   0.0500	grad_norm:               1101.4254	hold_mean:                 0.0000
+loss:                    110.0173	q_taken_mean:              0.6927	return_mean:             119.0583	return_std:              136.2299
+success_mean:              0.0000	t_mean:                  400.0000	target_mean:               0.1085	td_error_abs:              5.2628
+test_ep_length_mean:     400.0000	test_hold_mean:            0.0000	test_return_mean:        826.9395	test_return_std:         516.0435
+test_success_mean:         0.0000	test_t_mean:             400.0000	test_time_first_seen_mean:256.2500	time_first_seen_mean:    263.1600
+
+[INFO 11:54:39] my_main Recent Stats | t_env:     789533 | Episode:       96
+ep_length_mean:          400.0000	epsilon:                   0.0500	grad_norm:               411.7750	hold_mean:                 0.0000
+loss:                     46.8760	q_taken_mean:              0.0774	return_mean:             -10.3068	return_std:               79.2145
+success_mean:              0.0000	t_mean:                  400.0000	target_mean:               0.0948	td_error_abs:              3.5531
+test_ep_length_mean:     400.0000	test_hold_mean:            0.0000	test_return_mean:        826.9395	test_return_std:         516.0435
+test_success_mean:         0.0000	test_t_mean:             400.0000	test_time_first_seen_mean:256.2500	time_first_seen_mean:    314.8400
+
+[INFO 11:54:41] my_main Recent Stats | t_env:     791533 | Episode:      101
+ep_length_mean:          400.0000	epsilon:                   0.0500	grad_norm:               152.7720	hold_mean:                 0.0000
+loss:                     18.4889	q_taken_mean:             -0.1233	return_mean:              16.8449	return_std:              111.3543
+success_mean:              0.0000	t_mean:                  400.0000	target_mean:               0.0864	td_error_abs:              2.4537
+test_ep_length_mean:     400.0000	test_hold_mean:            0.0000	test_return_mean:        826.9395	test_return_std:         516.0435
+test_success_mean:         0.0000	test_t_mean:             400.0000	test_time_first_seen_mean:256.2500	time_first_seen_mean:    331.4000
+
+[INFO 11:54:43] my_main t_env: 793133 / 800000
+[INFO 11:54:43] my_main Estimated time left: 7 seconds. Time passed: 24 seconds
+[INFO 11:54:44] my_main Recent Stats | t_env:     793533 | Episode:      106
+ep_length_mean:          400.0000	epsilon:                   0.0500	grad_norm:                57.9678	hold_mean:                 0.0000
+loss:                      6.1928	q_taken_mean:             -0.1101	return_mean:              86.1915	return_std:              119.7985
+success_mean:              0.0000	t_mean:                  400.0000	target_mean:               0.0798	td_error_abs:              1.4949
+test_ep_length_mean:     400.0000	test_hold_mean:            0.0000	test_return_mean:        868.8239	test_return_std:         597.8376
+test_success_mean:         0.0000	test_t_mean:             400.0000	test_time_first_seen_mean:260.2400	time_first_seen_mean:    321.8000
+
+[INFO 11:54:46] my_main Recent Stats | t_env:     795533 | Episode:      111
+ep_length_mean:          400.0000	epsilon:                   0.0500	grad_norm:                21.0648	hold_mean:                 0.0000
+loss:                      2.1520	q_taken_mean:              0.0060	return_mean:             197.7156	return_std:              156.5211
+success_mean:              0.0000	t_mean:                  400.0000	target_mean:               0.0846	td_error_abs:              0.8401
+test_ep_length_mean:     400.0000	test_hold_mean:            0.0000	test_return_mean:        868.8239	test_return_std:         597.8376
+test_success_mean:         0.0000	test_t_mean:             400.0000	test_time_first_seen_mean:260.2400	time_first_seen_mean:    309.1600
+
+[INFO 11:54:48] my_main Recent Stats | t_env:     797533 | Episode:      116
+ep_length_mean:          400.0000	epsilon:                   0.0500	grad_norm:                 6.6655	hold_mean:                 0.0000
+loss:                      0.9174	q_taken_mean:              0.0835	return_mean:             732.9829	return_std:              565.1992
+success_mean:              0.0000	t_mean:                  400.0000	target_mean:               0.0836	td_error_abs:              0.5000
+test_ep_length_mean:     400.0000	test_hold_mean:            0.0000	test_return_mean:        868.8239	test_return_std:         597.8376
+test_success_mean:         0.0000	test_t_mean:             400.0000	test_time_first_seen_mean:260.2400	time_first_seen_mean:    270.3600
+
+[INFO 11:54:50] my_main Recent Stats | t_env:     799533 | Episode:      121
+ep_length_mean:          400.0000	epsilon:                   0.0500	grad_norm:                 4.1227	hold_mean:                 0.0000
+loss:                      0.7034	q_taken_mean:              0.0903	return_mean:             831.5885	return_std:              579.3897
+success_mean:              0.0000	t_mean:                  400.0000	target_mean:               0.0862	td_error_abs:              0.4326
+test_ep_length_mean:     400.0000	test_hold_mean:            0.0000	test_return_mean:        868.8239	test_return_std:         597.8376
+test_success_mean:         0.0000	test_t_mean:             400.0000	test_time_first_seen_mean:260.2400	time_first_seen_mean:    266.6000
+
+[INFO 11:54:51] my_main Finished Training
+Exiting Main
+Stopping all threads
+Thread Thread-1 is alive! Is daemon: False
+Thread joined
+Exiting script
+[DEBUG 11:54:52] my_main Finished after 0:00:35.
+[INFO 11:54:52] pymarl Completed after 0:00:35

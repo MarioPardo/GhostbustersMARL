@@ -8,19 +8,16 @@ class Ghost:
     """
     Minimal ghost entity for a MARL ghostbusters environment.
     """
-    def __init__(self, x,y,movementProb=1.0):
+    def __init__(self, x, y, movementProb=1.0, avoidRadius=2, surroundRadius=3):
         self.x = x
         self.y = y
         self.movementProb = movementProb  # Probability of moving each turn
-
-   
-        self.avoidRadius = 2  
+        self.avoidRadius = avoidRadius
+        self.surroundRadius = surroundRadius  
 
 
     def move(self, agentCoords):
-        """
-        Move randomly, avoiding agents within avoidRadius (Chebyshev distance).
-        """
+        #Move randomly, avoiding agents within avoidRadius (Chebyshev distance).
         
         def min_dist_to_agents(p):
             return min((cheb_dist(p, a) for a in agentCoords), default=float("inf"))
@@ -28,10 +25,8 @@ class Ghost:
         movementProb = self.movementProb
         if movementProb <= 0:
             return self.x, self.y  #stay put
-
         if random.random() > movementProb:
             return self.x, self.y  #stay put
-
 
         #If the closest agent is far enough, stay put
         min_dist = min_dist_to_agents((self.x, self.y))
@@ -54,7 +49,6 @@ class Ghost:
         candidateMoves = list({(nx, ny) for (nx, ny) in candidateMoves})
         random.shuffle(candidateMoves)
 
-
         # Sort by descending distance to the nearest agent (maximize separation)
         candidateMoves.sort(key=lambda p: min_dist_to_agents(p), reverse=True)
         occupied = set(agentCoords)
@@ -76,12 +70,14 @@ class Ghost:
         """Update the counter for how long the ghost has been surrounded."""
         ghost_x, ghost_y = self.x,self.y
         surroundCounter = sum(
-            cheb_dist((a[0], a[1]), (ghost_x, ghost_y)) <= SURROUND_RADIUS
+            cheb_dist((a[0], a[1]), (ghost_x, ghost_y)) <= self.surroundRadius
             for a in agentCoords
         )
 
         return surroundCounter
 
+
+    
 
 
 

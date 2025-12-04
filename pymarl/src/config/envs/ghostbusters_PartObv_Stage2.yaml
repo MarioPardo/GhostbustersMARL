@@ -12,6 +12,8 @@ env_args:
   vision_radius: 5
   spawn_radius: 15
   ghost_move_prob: 1
+  ghost_avoid_radius: 2
+  surround_radius: 3
 
   reward_kill: 200       
   reward_surrounded: 5   

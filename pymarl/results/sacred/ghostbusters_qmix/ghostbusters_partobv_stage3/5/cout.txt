@@ -1,0 +1,233 @@
+[INFO 12:05:04] pymarl Running command 'my_main'
+[INFO 12:05:04] pymarl Started run with ID "5"
+[DEBUG 12:05:04] pymarl Starting Heartbeat
+[DEBUG 12:05:04] my_main Started
+[WARNING 12:05:04] my_main CUDA flag use_cuda was switched OFF automatically because no CUDA devices are available!
+[INFO 12:05:04] my_main Experiment Parameters:
+[INFO 12:05:04] my_main 
+
+{   'action_selector': 'epsilon_greedy',
+    'add_value_last_step': True,
+    'agent': 'rnn',
+    'agent_output_type': 'q',
+    'batch_size': 64,
+    'batch_size_run': 1,
+    'buffer_cpu_only': True,
+    'buffer_size': 50000,
+    'checkpoint_path': 'results/models/ghostbusters_qmix_seed606191555_ghostbusters_partobv_stage3_2025-11-25 '
+                       '11:57:10.676871',
+    'common_reward': True,
+    'critic_lr': 0.0003,
+    'double_q': True,
+    'env': 'ghostbusters',
+    'env_args': {   'episode_limit': 400,
+                    'extraction_br': [   29,
+                                         29],
+                    'extraction_tl': [   25,
+                                         25],
+                    'ghost_avoid_radius': 3,
+                    'ghost_move_prob': 1,
+                    'height': 30,
+                    'key': 'ghostbusters_partobv_stage3',
+                    'lambda_agent_dist_to_ghost': 2,
+                    'lambda_agent_spread': 1.0,
+                    'lambda_ghost_dist_to_extraction': 0.1,
+                    'lambda_grid_coverage': 0.5,
+                    'lambda_quadrant_coverage': 0.2,
+                    'map_name': 'ghostbusters_partobv_stage3',
+                    'n_agents': 3,
+                    'render': False,
+                    'render_every': 1,
+                    'reward_ghost_spotted': 20,
+                    'reward_ghost_visible': 0.5,
+                    'reward_kill': 200,
+                    'reward_new_surround': 8,
+                    'reward_surrounded': 5,
+                    'seed': 471892183,
+                    'spawn_radius': 15,
+                    'surround_radius': 2,
+                    'vision_radius': 3,
+                    'width': 30},
+    'epsilon_anneal_time': 450000,
+    'epsilon_finish': 0.05,
+    'epsilon_start': 1,
+    'evaluate': True,
+    'evaluation_epsilon': 0.1,
+    'gamma': 0.99,
+    'grad_norm_clip': 5,
+    'hidden_dim': 64,
+    'hypergroup': None,
+    'hypernet_embed': 64,
+    'hypernet_layers': 2,
+    'label': 'default_label',
+    'learner': 'q_learner',
+    'learner_log_interval': 2000,
+    'load_step': 0,
+    'local_results_path': 'results',
+    'log_interval': 2000,
+    'lr': 0.0003,
+    'mac': 'basic_mac',
+    'mask_before_softmax': False,
+    'mixer': 'qmix',
+    'mixing_embed_dim': 32,
+    'name': 'ghostbusters_qmix',
+    'obs_agent_id': False,
+    'obs_last_action': False,
+    'optim_alpha': 0.99,
+    'optim_eps': 1e-05,
+    'optimizer': 'adam',
+    'render': True,
+    'repeat_id': 1,
+    'reward_scalarisation': 'sum',
+    'reward_standardisation_alpha': 0.01,
+    'rnn_hidden_dim': 128,
+    'runner': 'episode',
+    'runner_log_interval': 2000,
+    'save_model': True,
+    'save_model_interval': 50000,
+    'save_replay': False,
+    'seed': 471892183,
+    'standardise_returns': False,
+    'standardise_rewards': True,
+    'state_last_action': False,
+    't_max': 800000,
+    'target_update_interval': 200,
+    'target_update_interval_or_tau': 200,
+    'tau': 0.005,
+    'test_greedy': True,
+    'test_interval': 10000,
+    'test_nepisode': 20,
+    'use_cuda': False,
+    'use_rnn': True,
+    'use_tensorboard': False,
+    'use_wandb': False,
+    'wandb_mode': 'offline',
+    'wandb_project': None,
+    'wandb_save_model': False,
+    'wandb_team': None}
+
+[GhostbustersEnv] Unused env args ignored: ['vision_radius', 'spawn_radius', 'ghost_move_prob', 'ghost_avoid_radius', 'surround_radius', 'reward_kill', 'reward_surrounded', 'reward_new_surround', 'reward_ghost_spotted', 'reward_ghost_visible', 'lambda_agent_spread', 'lambda_grid_coverage', 'lambda_quadrant_coverage', 'lambda_ghost_dist_to_extraction', 'lambda_agent_dist_to_ghost', 'render', 'render_every', 'reward_scalarisation']
+
+===== DEBUG ARGS =====
+action_selector: epsilon_greedy
+add_value_last_step: True
+agent: rnn
+agent_output_type: q
+batch_size: 64
+batch_size_run: 1
+buffer_cpu_only: True
+buffer_size: 50000
+checkpoint_path: results/models/ghostbusters_qmix_seed606191555_ghostbusters_partobv_stage3_2025-11-25 11:57:10.676871
+common_reward: True
+critic_lr: 0.0003
+device: cpu
+double_q: True
+env: ghostbusters
+env_args: {'n_agents': 3, 'episode_limit': 400, 'width': 30, 'height': 30, 'extraction_tl': [25, 25], 'extraction_br': [29, 29], 'seed': 471892183, 'vision_radius': 3, 'spawn_radius': 15, 'ghost_move_prob': 1, 'ghost_avoid_radius': 3, 'surround_radius': 2, 'reward_kill': 200, 'reward_surrounded': 5, 'reward_new_surround': 8, 'reward_ghost_spotted': 20, 'reward_ghost_visible': 0.5, 'lambda_agent_spread': 1.0, 'lambda_grid_coverage': 0.5, 'lambda_quadrant_coverage': 0.2, 'lambda_ghost_dist_to_extraction': 0.1, 'lambda_agent_dist_to_ghost': 2, 'map_name': 'ghostbusters_partobv_stage3', 'key': 'ghostbusters_partobv_stage3', 'render': False, 'render_every': 1}
+epsilon_anneal_time: 450000
+epsilon_finish: 0.05
+epsilon_start: 1
+evaluate: True
+evaluation_epsilon: 0.1
+gamma: 0.99
+grad_norm_clip: 5
+hidden_dim: 64
+hypergroup: None
+hypernet_embed: 64
+hypernet_layers: 2
+label: default_label
+learner: q_learner
+learner_log_interval: 2000
+load_step: 0
+local_results_path: results
+log_interval: 2000
+lr: 0.0003
+mac: basic_mac
+mask_before_softmax: False
+mixer: qmix
+mixing_embed_dim: 32
+n_actions: 9
+n_agents: 3
+name: ghostbusters_qmix
+obs_agent_id: False
+obs_last_action: False
+optim_alpha: 0.99
+optim_eps: 1e-05
+optimizer: adam
+render: True
+repeat_id: 1
+reward_scalarisation: sum
+reward_standardisation_alpha: 0.01
+rnn_hidden_dim: 128
+runner: episode
+runner_log_interval: 2000
+save_model: True
+save_model_interval: 50000
+save_replay: False
+seed: 471892183
+standardise_returns: False
+standardise_rewards: True
+state_last_action: False
+state_shape: 17
+t_max: 800000
+target_update_interval: 200
+target_update_interval_or_tau: 200
+tau: 0.005
+test_greedy: True
+test_interval: 10000
+test_nepisode: 20
+unique_token: ghostbusters_qmix_seed471892183_ghostbusters_partobv_stage3_2025-11-25 12:05:04.485118
+use_cuda: False
+use_rnn: True
+use_tensorboard: False
+use_wandb: False
+wandb_mode: offline
+wandb_project: None
+wandb_save_model: False
+wandb_team: None
+======================
+
+[INFO 12:05:06] my_main Loading model from results/models/ghostbusters_qmix_seed606191555_ghostbusters_partobv_stage3_2025-11-25 11:57:10.676871/450926
+/Users/mario/Documents/Programming/GhostbustersMARL/pymarl/src/components/episode_buffer.py:93: UserWarning: Using a non-tuple sequence for multidimensional indexing is deprecated and will be changed in pytorch 2.9; use x[tuple(seq)] instead of x[seq]. In pytorch 2.9 this will be interpreted as tensor index, x[torch.tensor(seq)], which will result either in an error or a different result (Triggered internally at /Users/runner/work/pytorch/pytorch/pytorch/torch/csrc/autograd/python_variable_indexing.cpp:312.)
+  target["filled"][slices] = 1
+/Users/mario/Documents/Programming/GhostbustersMARL/pymarl/src/components/episode_buffer.py:105: UserWarning: Using a non-tuple sequence for multidimensional indexing is deprecated and will be changed in pytorch 2.9; use x[tuple(seq)] instead of x[seq]. In pytorch 2.9 this will be interpreted as tensor index, x[torch.tensor(seq)], which will result either in an error or a different result (Triggered internally at /Users/runner/work/pytorch/pytorch/pytorch/torch/csrc/autograd/python_variable_indexing.cpp:312.)
+  self._check_safe_view(v, target[k][_slices])
+/Users/mario/Documents/Programming/GhostbustersMARL/pymarl/src/components/episode_buffer.py:106: UserWarning: Using a non-tuple sequence for multidimensional indexing is deprecated and will be changed in pytorch 2.9; use x[tuple(seq)] instead of x[seq]. In pytorch 2.9 this will be interpreted as tensor index, x[torch.tensor(seq)], which will result either in an error or a different result (Triggered internally at /Users/runner/work/pytorch/pytorch/pytorch/torch/csrc/autograd/python_variable_indexing.cpp:312.)
+  target[k][_slices] = v.view_as(target[k][_slices])
+[GhostbustersEnv] Initializing pygame display for rendering...
+[GhostbustersEnv] Display initialized successfully
+/Users/mario/Documents/Programming/GhostbustersMARL/pymarl/src/components/episode_buffer.py:110: UserWarning: Using a non-tuple sequence for multidimensional indexing is deprecated and will be changed in pytorch 2.9; use x[tuple(seq)] instead of x[seq]. In pytorch 2.9 this will be interpreted as tensor index, x[torch.tensor(seq)], which will result either in an error or a different result (Triggered internally at /Users/runner/work/pytorch/pytorch/pytorch/torch/csrc/autograd/python_variable_indexing.cpp:312.)
+  v = target[k][_slices]
+/Users/mario/Documents/Programming/GhostbustersMARL/pymarl/src/components/episode_buffer.py:113: UserWarning: Using a non-tuple sequence for multidimensional indexing is deprecated and will be changed in pytorch 2.9; use x[tuple(seq)] instead of x[seq]. In pytorch 2.9 this will be interpreted as tensor index, x[torch.tensor(seq)], which will result either in an error or a different result (Triggered internally at /Users/runner/work/pytorch/pytorch/pytorch/torch/csrc/autograd/python_variable_indexing.cpp:312.)
+  target[new_k][_slices] = v.view_as(target[new_k][_slices])
+Episode return: 4426.235748151492
+Episode return: 1174.396071589651
+Episode return: 2174.720697035549
+Episode return: 1347.6113806087442
+Episode return: 4713.744277884703
+Episode return: 3841.5827879371873
+Episode return: 3889.4321427541536
+Episode return: 1661.566597373133
+Episode return: 8938.838348076648
+Episode return: 3879.354506935142
+Episode return: 7481.721005597333
+Episode return: 2903.8176265651236
+Episode return: 5563.520657878548
+Episode return: 5715.51529938361
+Episode return: 2121.647969464094
+Episode return: 6124.637659091673
+Episode return: 5164.2814466762475
+Episode return: 2508.685171593751
+Episode return: 500.85519435017636
+Episode return: 2807.1035045740373
+[INFO 12:08:08] my_main Recent Stats | t_env:          0 | Episode:        0
+test_ep_length_mean:     251.2500	test_hold_mean:            3.5000	test_return_mean:        3846.9634	test_return_std:         2150.4219
+test_success_mean:         0.7000	test_t_mean:             251.2500	test_time_first_seen_mean: 89.1000	
+[INFO 12:08:08] my_main Finished Evaluation
+Exiting Main
+Stopping all threads
+Thread Thread-1 is alive! Is daemon: False
+Thread joined
+Exiting script
+[DEBUG 12:08:09] my_main Finished after 0:03:05.
+[INFO 12:08:09] pymarl Completed after 0:03:05

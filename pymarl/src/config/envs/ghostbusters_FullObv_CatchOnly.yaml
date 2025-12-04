@@ -11,7 +11,9 @@
 
 
   ghost_move_prob : 1  
-  spawn_radius: 15      
+  spawn_radius: 15
+  ghost_avoid_radius: 2
+  surround_radius: 3      
 
   
   reward_kill: 100       
