@@ -3,7 +3,6 @@ import numpy as np
 import pygame
 
 
-# Ensure your project src/ is on the path so imports work
 SOURCE_ROOT = "/home/mariop/Documents/Programming/school/GhostbustersMARL"
 if SOURCE_ROOT not in sys.path:
     sys.path.insert(0, SOURCE_ROOT)
@@ -85,7 +84,6 @@ class GhostbustersPyMARLEnv:
             print(f"[GhostbustersEnv] Unused env args ignored: {list(kwargs.keys())}")
 
 
-        #Create the Game Engine
         self.engine = GameEngine(
             extractionTL_x=e_tl_x,
             extractionTL_y=e_tl_y,
@@ -102,7 +100,7 @@ class GhostbustersPyMARLEnv:
 
     # -------- required API --------
     def reset(self):
-        self.engine.reset(randomized=True)     # use True later; False for fixed debugging
+        self.engine.reset(randomized=True)  
 
         #rendering
         if self.renderEnabled and not self._have_display:
@@ -156,10 +154,6 @@ class GhostbustersPyMARLEnv:
         return self._obs_dim
 
     def get_state(self):
-        """Full state representation (normalized coords in [0,1] plus time).
-
-        
-        """
 
         W, H = self.gridwidth, self.gridheight
         s = []

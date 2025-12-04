@@ -65,20 +65,17 @@ class Grid:
     # ---------- Drawing ----------
 
     def init_display(self, cell_size: int = 20, caption: str = "Ghostbusters Grid") -> None:
-        """Initialize pygame window & font; call once before drawing."""
-        import pygame  # Import only when actually needed for rendering
-        
+
         self.cell_size = cell_size
         pygame.init()
         self.surface = pygame.display.set_mode((self.width * cell_size, self.height * cell_size))
         pygame.display.set_caption(caption)
         if not pygame.font.get_init():
             pygame.font.init()
-        # Small readable font; tweak size if you prefer
+
         self._font_small = pygame.font.SysFont("consolas", max(12, cell_size // 2))
 
     def close_display(self) -> None:
-        import pygame  # Import only when needed
         
         if self.surface is not None:
             pygame.display.quit()
@@ -87,7 +84,6 @@ class Grid:
         self._font_small = None
     
     def _cell_rect(self, x: int, y: int):
-        import pygame  # Import only when needed
         
         s = self.cell_size
         return pygame.Rect(x * s, y * s, s, s)
@@ -103,7 +99,7 @@ class Grid:
         # Background
         surf.fill(bkgColor)
 
-        # Vision shading (Chebyshev disks around agents)
+        # Vision shading 
         R = self.visibilityRadius
         if R > 0:
             for ax, ay in self.agentCoords:
@@ -117,7 +113,6 @@ class Grid:
                             pygame.draw.rect(surf, visionColor, self._cell_rect(x, y))
 
         # Extraction point
-
         tlx, tly = self.extraction_area_tl
         brx, bry = self.extraction_area_br
 
@@ -133,13 +128,13 @@ class Grid:
             for y in range(ymin, ymax + 1):
                 pygame.draw.rect(surf, extractionColor, self._cell_rect(x, y))
 
-        # Agents (with indices)
+        # Agents with indices
         for i, (ax, ay) in enumerate(self.agentCoords):
             r = self._cell_rect(ax, ay)
             pygame.draw.rect(surf, agentColor, r)
             if self._font_small:
                 label = self._font_small.render(str(i), True, (0, 0, 0))
-                # Center the index roughly in the cell
+                # Center the index in the cell
                 lx = r.x + (s - label.get_width()) // 2
                 ly = r.y + (s - label.get_height()) // 2
                 surf.blit(label, (lx, ly))
@@ -157,7 +152,7 @@ class Grid:
             for y in range(self.height + 1):
                 pygame.draw.line(surf, linesColor, (0, y * s), (W, y * s), 1)
 
-        # Small delay to maintain ~60 FPS
+        # Small delay to fps
             pygame.time.Clock().tick(30)
 
         pygame.display.flip()

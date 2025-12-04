@@ -17,8 +17,8 @@ class Ghost:
 
 
     def move(self, agentCoords):
-        #Move randomly, avoiding agents within avoidRadius (Chebyshev distance).
-        
+        #Move randomly, avoiding agents within avoidRadius 
+
         def min_dist_to_agents(p):
             return min((cheb_dist(p, a) for a in agentCoords), default=float("inf"))
 
@@ -67,7 +67,6 @@ class Ghost:
     
 
     def GetSurroundedCount(self, agentCoords):
-        """Update the counter for how long the ghost has been surrounded."""
         ghost_x, ghost_y = self.x,self.y
         surroundCounter = sum(
             cheb_dist((a[0], a[1]), (ghost_x, ghost_y)) <= self.surroundRadius

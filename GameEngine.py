@@ -58,7 +58,6 @@ class GameEngine:
 
         self.timeToKill = TIME_TO_KILL
         
-        # Initialize visit map for exploration tracking
         self.visit_map = {}
         self.prev_agentCoords = None  # Track previous positions for movement detection
 
@@ -69,9 +68,6 @@ class GameEngine:
         self.time_first_seen = None
 
     def reset(self, randomized = True):
-        """
-        Reset the game state for a new episode.
-        """
 
         self.agentCoords, self.ghostCoords = self.SpawnEntities(randomized=randomized, spawn_radius=self.spawn_radius)
         self.grid.setEntities(self.agentCoords, self.ghostCoords) 
@@ -90,21 +86,14 @@ class GameEngine:
         self.prev_ghost_visible = False
         self.time_first_seen = None
         self.reward_ghost_spotted = self.reward_cfg.get("reward_ghost_spotted", 10)
-        self.visit_map = {}  # Reset exploration tracking
-        self.prev_agentCoords = None  # Reset movement tracking
+        self.visit_map = {}  
+        self.prev_agentCoords = None  
         self.updateGhostVisibility()
 
-        return self.full_obs_helper()
+        return 
 
-
+    #Spawn agents and ghost at random non-overlapping locations.
     def SpawnEntities(self, randomized: bool, spawn_radius: int):
-        """
-        Spawn agents and ghost at random non-overlapping locations.
-        
-        Args:
-            randomized: If False, use preset positions
-            spawn_radius: If provided, spawn ghost within this radius of at least one agent (curriculum)
-        """
 
         if not randomized:
             return presetAgentCoords, presetGhostCoords
@@ -145,11 +134,8 @@ class GameEngine:
 
         return agentSpawnpoints, ghostSpawnpoint
 
-
+    #used for "testing" game
     def simpleStep(self):
-        """
-        Advance the game state by one step.
-        """
 
         #Move Ghost
         self.ghostCoords = self.ghost.move(self.agentCoords)
@@ -165,9 +151,6 @@ class GameEngine:
 
 
     def getAllAvailableActions(self):
-        """
-        Return a list of length n_agents, each entry a length-N_ACTIONS binary mask of legal actions.
-        """
         
         i = 0
         avail_actions = []
@@ -180,7 +163,7 @@ class GameEngine:
     def getValidAgentActions(self, i:int) -> np.ndarray:
         """
         Return a length-N_ACTIONS binary mask of legal actions for agent i,
-        disallowing moves OOB or into occupied cells (other agents, ghost).
+        disallowing moves out of boinds or into occupied cells (other agents, ghost).
         """
         W, H = self.grid.width, self.grid.height
 
@@ -216,7 +199,7 @@ class GameEngine:
 
     def step(self, actions: list[int]):
 
-        ##Info about previous state used for calculating rewards
+        #Info about previous state used for calculating rewards
         prev_d_ghost_extract = cheb_dist(self.grid.extraction_point_center, self.ghostCoords)
         prev_d_ghost_agents = [cheb_dist((a.x, a.y), (self.ghost.x, self.ghost.y)) for a in self.agents]
         prev_surround_count = self.ghost.GetSurroundedCount(self.agentCoords)
@@ -326,7 +309,6 @@ class GameEngine:
             visit_count = self.visit_map.get(cell, 0)
             
             # Reward inversely proportional to visit count
-            # First visit = full reward, subsequent visits = diminishing returns
             cell_reward = 1.0 / (1.0 + visit_count)
             exploration_reward += self.lambda_grid_coverage * cell_reward
             
@@ -459,7 +441,7 @@ class GameEngine:
             # Dot product: want agents opposite extraction direction, so we want negative
             dot_product = (agent_dir_x * extract_dir_x + agent_dir_y * extract_dir_y)
             
-            # Calculate proximity bonus. Reward when close
+            # Calculate proximity bonus
             normalized_dist = agent_dist / max_dist
             proximity_multiplier = max(0, (1.0 - normalized_dist)) ** 1.5 
             
@@ -531,7 +513,6 @@ class GameEngine:
         return cheb_dist((ax, ay), (tx, ty)) <= self.vision_radius
 
     def updateGhostVisibility(self):
-        # Debug: check each agent's visibility
         can_see = [self.canSeeGhost(i) for i in range(len(self.agents))]
         self.ghost_visible = any(can_see)
         
@@ -584,27 +565,6 @@ class GameEngine:
         return obs
 
 
-
-    #Currently: Full Observation (not partial)
-    def full_obs_helper(self):
-        """Full-obs helper (normalized coords in [0,1]). Returns list per-agent."""
-        W, H = self.grid.width, self.grid.height
-        gx, gy = self.ghostCoords
-        obs = []
-        for i, a in enumerate(self.agents):
-            vec = np.array([
-                a.x/(W-1), a.y/(H-1),
-                gx/(W-1), gy/(W-1),
-                self.grid.extraction_area_tl[0]/(W-1), self.grid.extraction_area_tl[1]/(H-1),
-                self.grid.extraction_area_br[0]/(W-1), self.grid.extraction_area_br[1]/(H-1),
-                
-                #Show Progress
-                cheb_dist((a.x, a.y), (gx, gy)) / cheb_dist((0,0), (W-1,H-1) ),
-                self.surroundCounter / numAgents,
-                self.holdCounter / self.timeToKill
-            ], dtype=np.float32)
-            obs.append(vec)
-        return obs
 
 # ----------- Small demo loop -----------
 if __name__ == "__main__":

@@ -14,13 +14,6 @@ class Agent:
         self.x = x
         self.y = y
 
-    ## OBSERVATIONS ##
-
-    def receiveObservation():
-        pass
-
-
-    ## ACTIONS ##
 
     #Initial "test game"
     def randMove(self):
@@ -54,5 +47,3 @@ class Agent:
         self.x, self.y = nx, ny
 
 
-
-    ## REWARDS ##

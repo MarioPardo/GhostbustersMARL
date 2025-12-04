@@ -26,8 +26,8 @@ env_args:
   lambda_ghost_dist_to_extraction: 0.1
   lambda_agent_dist_to_ghost: 2
 
-  map_name: ghostbusters_partobv_vision15
-  key: ghostbusters_partobv_vision15
+  map_name: ghostbusters_partobv_stage1
+  key: ghostbusters_partobv_stage1
 
   render: False
   render_every: 1

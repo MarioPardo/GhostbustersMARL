@@ -24,8 +24,8 @@
   lambda_agent_dist_to_ghost: 1.0  
 
   # --- SMAC-style keys ---
-  map_name: ghostbusters_stage2
-  key: ghostbusters_stage2
+  map_name: ghostbusters_fullobv_stage2
+  key: ghostbusters_fullobv_stage2
 
   # rendering
   render: False        
