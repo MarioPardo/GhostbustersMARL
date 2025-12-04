@@ -233,9 +233,9 @@ class GhostbustersPyMARLEnv:
 
     def get_state(self):
         if self.isPartObv:
-            return self.get_state_partobv()
+            return self.engine.get_state_partobv()
         else:
-            return self.get_state_fullobv()
+            return self.engine.get_state_fullobv()
 
     def get_state_size(self):
         return self._state_dim

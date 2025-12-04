@@ -483,7 +483,6 @@ class GameEngine:
 
 
     def calculateUsefulMetrics(self):
-        
         # Average Distance Agents to Ghost
         total_dist = sum(cheb_dist((a.x, a.y), self.ghostCoords) for a in self.agents)
         self.avgDistToGhost = total_dist / len(self.agents)
@@ -522,7 +521,7 @@ class GameEngine:
             if self.time_first_seen is None:
                 self.time_first_seen = self.Time
 
-    def getAgentObs(self, agentIndex):
+    def getAgentObs_PartObv(self, agentIndex):
         W, H = self.grid.width, self.grid.height
         ax, ay = self.agents[agentIndex].x, self.agents[agentIndex].y
         
@@ -563,6 +562,95 @@ class GameEngine:
         ]
 
         return obs
+    
+    def getAgentObs_FullObv(self, agentIndex):
+        W, H = self.grid.width, self.grid.height
+        ax, ay = self.agents[agentIndex].x, self.agents[agentIndex].y
+        gx, gy = self.ghostCoords
+
+    
+        obs = [
+            ax / (W-1), ay / (H-1),
+            gx / (W-1), gy / (H-1),
+            self.grid.extraction_area_tl[0]/(W-1), self.grid.extraction_area_tl[1]/(H-1),
+            self.grid.extraction_area_br[0]/(W-1), self.grid.extraction_area_br[1]/(H-1),
+
+            cheb_dist((ax, ay), (gx, gy)) / max(W-1, H-1),
+            self.surroundCounter / numAgents,
+            self.holdCounter / self.timeToKill
+
+        ]
+
+        return obs 
+    
+    def get_state_partobv(self):
+
+        W, H = self.grid.width, self.grid.height
+        s = []
+
+        # all agents
+        for a in self.agents:
+            s += [a.x/(W-1), a.y/(H-1)]
+
+        if self.ghost_visible:
+            gx, gy = self.ghostCoords
+            s += [gx/(W-1), gy/(H-1), 1.0]
+        else:
+            s += [0.0, 0.0, 0.0]
+
+        #Extraction area
+        etlx, etly = self.grid.extraction_area_tl
+        ebrx, ebry = self.grid.extraction_area_br
+        s += [etlx/(W-1), etly/(H-1), ebrx/(W-1), ebry/(H-1)]
+
+        #Game progress
+        s += [self.Time / self.episodeLimit]
+
+        #Global task progress (for value estimation)
+        s += [
+            self.surroundCounter / numAgents,
+            self.holdCounter / self.timeToKill,
+        ]
+        
+        #Only include avg distance to ghost if visible
+        if self.ghost_visible:
+            avg_dist = sum(cheb_dist((a.x, a.y), self.ghostCoords) for a in self.agents) / (numAgents * max(W-1, H-1))
+            s += [avg_dist]
+        else:
+            s += [0.0]
+
+        return np.asarray(s, dtype=np.float32)
+    
+    def get_state_fullobv(self):
+        W, H = self.grid.width, self.grid.height
+        s = []
+
+        # all agents
+        for a in self.agents:
+            s += [a.x/(W-1), a.y/(H-1)]
+
+        #Ghost + visible flag (full obs baseline → 1.0)
+        gx, gy = self.ghostCoords
+        s += [gx/(W-1), gy/(H-1), 1.0]
+
+        #Extraction area
+        etlx, etly = self.grid.extraction_area_tl
+        ebrx, ebry = self.grid.extraction_area_br
+        s += [etlx/(W-1), etly/(H-1), ebrx/(W-1), ebry/(H-1)]
+
+        #Game progress
+        s += [self.Time / self.episodeLimit]
+
+        #Global task progress (for value estimation)
+        s += [
+            self.surroundCounter / numAgents,  # surround progress 
+            self.holdCounter / self.timeToKill,  # capture progress 
+            # Average distance to ghost (normalized)
+            sum(cheb_dist((a.x, a.y), self.ghostCoords) for a in self.agents) / (numAgents * max(W-1, H-1))
+        ]
+
+        return np.asarray(s, dtype=np.float32)
+
 
 
 
