@@ -2,6 +2,8 @@
 
  Multi Agent Reinforcement Learning is used to train agents to play a version of a ghostbusters game, where they must learn to surround and capture an avoiding ghost, inside of a partially observable environment.
 
+![Image](https://github.com/user-attachments/assets/1f803eef-6aab-4d7f-9cbd-7ebd4b08f613)
+
 ##  --- Main Files 
 
 ### GameEngine.py
