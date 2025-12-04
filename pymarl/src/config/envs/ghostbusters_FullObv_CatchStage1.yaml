@@ -12,11 +12,13 @@ env_args:
   extraction_br : [29, 29]
   seed: 0
 
+  isPartObv: False
 
   ghost_move_prob : 0  
   spawn_radius: 10   
   ghost_avoid_radius: 2
   surround_radius: 3     
+  vision_radius: 0 # Don't render vision area
 
   reward_kill: 100       
   reward_surrounded: 5   

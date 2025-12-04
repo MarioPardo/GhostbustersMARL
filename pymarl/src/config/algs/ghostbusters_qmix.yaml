@@ -49,11 +49,11 @@ epsilon_anneal_time: 450000
 
 # Logging with reward normalization for stability
 standardise_returns: False
-standardise_rewards: True   # Normalize rewards to prevent Q-explosion
+standardise_rewards: True   
 reward_standardisation_alpha: 0.01 
 
 # --- Logging / Eval ---
-test_nepisode: 5
+test_nepisode: 10
 test_interval: 10000        
 log_interval: 2000
 save_model: True

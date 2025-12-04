@@ -13,12 +13,13 @@ env_args:
   extraction_br : [29, 29]
   seed: 0
 
-  # Full difficulty
-  curriculum_stage: 3
-  ghost_move_prob: 1.0  
-  spawn_radius: 30    
 
- #reward
+  ghost_move_prob: 1.0  
+  spawn_radius: 30 
+  ghost_avoid_radius: 3
+  surround_radius: 3    
+  vision_radius: 0 # Don't render vision area
+
   reward_kill: 100          
   reward_new_surround: 3            
   penalty_formation_break: 2.0   

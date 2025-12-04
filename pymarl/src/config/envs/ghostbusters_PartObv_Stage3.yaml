@@ -9,6 +9,8 @@ env_args:
   extraction_br : [29, 29]
   seed: 0
 
+  isPartObv: True
+
   vision_radius: 3
   spawn_radius: 15
   ghost_move_prob: 1
@@ -32,5 +34,4 @@ env_args:
   render: False
   render_every: 1
 
-checkpoint_path: "results/models/QMIX_PartObv_Stage2_Winner"
-load_step: 0  # 0 = load highest timestep available
+

@@ -41,7 +41,7 @@ standardise_returns: False
 standardise_rewards: False
 
 # --- Logging / Eval ---
-test_nepisode: 4
+test_nepisode: 10
 test_interval: 10000        
 log_interval: 2000
 save_model: True

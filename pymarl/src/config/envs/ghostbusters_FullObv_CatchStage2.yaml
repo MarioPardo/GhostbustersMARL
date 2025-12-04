@@ -9,11 +9,15 @@
   extraction_br : [29, 29]
   seed: 0
 
+  isPartObv: False
 
   ghost_move_prob : 1  
   spawn_radius: 15
   ghost_avoid_radius: 2
-  surround_radius: 3      
+  surround_radius: 3   
+  vision_radius: 0 # Don't render vision area
+
+  
 
   
   reward_kill: 100       

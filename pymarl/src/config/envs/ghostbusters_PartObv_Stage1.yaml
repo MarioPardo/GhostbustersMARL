@@ -9,6 +9,8 @@ env_args:
   extraction_br : [29, 29]
   seed: 0
 
+  isPartObv: True
+
   vision_radius: 8
   spawn_radius: 12
   ghost_move_prob: 0.5

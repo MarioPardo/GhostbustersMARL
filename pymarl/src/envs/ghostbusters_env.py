@@ -10,6 +10,11 @@ if SOURCE_ROOT not in sys.path:
 from GameEngine import GameEngine           # your class
 from Constants import *
 
+PartObvDim = 16
+FullObvDim = 11
+
+
+
 
 class GhostbustersPyMARLEnv:
     def __init__(self, n_agents, 
@@ -27,13 +32,15 @@ class GhostbustersPyMARLEnv:
         e_tl_x, e_tl_y = extraction_tl
         e_br_x, e_br_y = extraction_br
 
+        self.isPartObv = kwargs.get("isPartObv", True)
+
         self.spawn_radius = kwargs.get("spawn_radius", None)
         self.ghost_move_prob = kwargs.get("ghost_move_prob", 1.0)
         self.vision_radius = kwargs.get("vision_radius", None)
         self.ghost_avoid_radius = kwargs.get("ghost_avoid_radius", 2)
         self.surround_radius = kwargs.get("surround_radius", 3)
         
-        self._obs_dim = 2 + 3 + (n_agents - 1) * 3 + 4 + 1
+        self._obs_dim = PartObvDim if self.isPartObv else FullObvDim
         self._state_dim = 2 * n_agents + 3 + 4 + 1 + 3
         
         self.last_reward = 0.0   # all agents (2*n) + ghost (3) + extraction (4) + time (1) + progress (3)
@@ -147,13 +154,16 @@ class GhostbustersPyMARLEnv:
         return self.engine.getAllAvailableActions()
 
     def get_obs(self):
-        return [self.engine.getAgentObs(i) for i in range(self.n_agents)]
+        if self.isPartObv:
+            return [self.engine.getAgentObs_PartObv(i) for i in range(self.n_agents)]
+        else:
+            return [self.engine.getAgentObs_FullObv(i) for i in range(self.n_agents)]
 
 
     def get_obs_size(self):
         return self._obs_dim
 
-    def get_state(self):
+    def get_state_partobv(self):
 
         W, H = self.gridwidth, self.gridheight
         s = []
@@ -190,6 +200,42 @@ class GhostbustersPyMARLEnv:
             s += [0.0]
 
         return np.asarray(s, dtype=np.float32)
+    
+    def get_state_fullobv(self):
+        W, H = self.gridwidth, self.gridheight
+        s = []
+
+        # all agents
+        for a in self.engine.agents:
+            s += [a.x/(W-1), a.y/(H-1)]
+
+        #Ghost + visible flag (full obs baseline → 1.0)
+        gx, gy = self.engine.ghostCoords
+        s += [gx/(W-1), gy/(H-1), 1.0]
+
+        #Extraction area
+        etlx, etly = self.engine.grid.extraction_area_tl
+        ebrx, ebry = self.engine.grid.extraction_area_br
+        s += [etlx/(W-1), etly/(H-1), ebrx/(W-1), ebry/(H-1)]
+
+        #Game progress
+        s += [self.engine.Time / self.episode_limit]
+
+        #Global task progress (for value estimation)
+        s += [
+            self.engine.surroundCounter / self.n_agents,  # surround progress [0-1]
+            self.engine.holdCounter / self.engine.timeToKill,  # capture progress [0-1]
+            # Average distance to ghost (normalized)
+            sum(cheb_dist((a.x, a.y), self.engine.ghostCoords) for a in self.engine.agents) / (self.n_agents * max(W-1, H-1))
+        ]
+
+        return np.asarray(s, dtype=np.float32)
+
+    def get_state(self):
+        if self.isPartObv:
+            return self.get_state_partobv()
+        else:
+            return self.get_state_fullobv()
 
     def get_state_size(self):
         return self._state_dim
